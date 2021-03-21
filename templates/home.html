@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+  <h3>
+    Welcome to the test app!
+  </h3>
+  <br />
+
+  <img src="../static/img/wormsign.png" />
+  <br />
+
+  Go to <a href="/home">the /home route</a> to see a message below:
+  <br />
+  <br />
+
+  {{test}}
+</div>
+{% endblock %}
