@@ -10,6 +10,7 @@ app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
 app.secret_key = os.urandom(16)
 
+
 def connect():
     """ Connect to the PostgreSQL database server """
     conn = None
@@ -71,16 +72,52 @@ def insert_user(username, password):
         if conn is not None:
             conn.close()
     return 'success'
-#This is needed if we want to force user logins, leaving commented out for now
+
+
+def login_user(username, password):
+    """ logs user into the recipe manager """
+    checksql = """SELECT * FROM "Users" WHERE "Username" = '{}' AND "Password" = '{}';""".format(username, password)
+    ct = datetime.datetime.utcnow()
+    sql = """UPDATE "Users" SET "LastAccessDate" = '{}' WHERE "Username" = '{}' AND "Password" = '{}'""".format(ct, username, password)
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+        cur.execute(checksql)
+        user = cur.fetchone()
+
+        # if user is empty this login failed
+        if user is None:
+            return 'failed'
+        else:
+            # execute the UPDATE statement
+            cur.execute(sql)
+            # commit the changes to the database
+            conn.commit()
+
+        # close communication with the database
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return 'success'
 
 def require_login(f):
-    #@wraps(f)
+    # @wraps(f)
     def inner(*args, **kwargs):
         if 'user' not in session:
             flash('Please log in')
             return redirect(url_for('login'))
         else:
             return f(*args, **kwargs)
+
     return inner
 
 
@@ -89,31 +126,41 @@ def require_login(f):
 def root():
     return render_template("home.html")
 
+
 @app.route("/home")
 def about():
     return render_template("home.html", test=example_util.example_fxn())
 
-@app.route("/login", methods=['GET','POST'])
+
+@app.route("/login", methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        return redirect(url_for('about'))
-    return render_template("login.html")
+        loginresult = login_user(username, password)
+        if loginresult == 'failed':
+            error = 'Incorrect Username and Password'
+        else:
+            flash('Successfully logged in')
+            return redirect(url_for('about'))
+    return render_template("login.html", error=error)
 
-@app.route("/createaccount", methods=['GET','POST'])
+
+@app.route("/createaccount", methods=['GET', 'POST'])
 def createaccount():
     error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        result = insert_user(username, password)
-        if result == 'failed':
+        insertresult = insert_user(username, password)
+        if insertresult == 'failed':
             error = 'This Username already exists, please try another'
         else:
             flash('Account successfully created!')
             return redirect(url_for('about'))
     return render_template("createaccount.html", error=error)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

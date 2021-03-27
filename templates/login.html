@@ -3,6 +3,9 @@
 <head>
     <div class="login">
   <h1>Login to Recipe Manager</h1>
+        {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
   <form method="post" action="">
     <p><input type="text" name="username" value="" placeholder="Username"></p>
     <p><input type="password" name="password" value="" placeholder="Password"></p>
