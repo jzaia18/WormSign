@@ -53,8 +53,9 @@ def insert_user(username, password):
         cur = conn.cursor()
         # check if user exists
         cur.execute(checksql)
+        user = cur.fetchone()
 
-        if cur.fetchone is not None:
+        if user is not None:
             return 'failed'
         else:
             # execute the INSERT statement
@@ -102,15 +103,17 @@ def login():
 
 @app.route("/createaccount", methods=['GET','POST'])
 def createaccount():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         result = insert_user(username, password)
         if result == 'failed':
-            flash('This Username already exists, please try another')
+            error = 'This Username already exists, please try another'
         else:
+            flash('Account successfully created!')
             return redirect(url_for('about'))
-    return render_template("createaccount.html")
+    return render_template("createaccount.html", error=error)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
