@@ -2,6 +2,7 @@ import psycopg2 as psycopg2
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from utils import example_util
 import os, json
+import datetime;
 
 from utils.config import config
 
@@ -37,6 +38,38 @@ def connect():
     return conn
 
 
+def insert_user(username, password):
+    """ insert a new user into the users table """
+    checksql = """SELECT * FROM "Users" WHERE "Username" = '{}';""".format(username)
+    sql = """INSERT INTO "Users"("Username", "Password", "DateJoined", "LastAccessDate") VALUES(%s, %s, %s, %s)"""
+    ct = datetime.datetime.utcnow()
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+        cur.execute(checksql)
+
+        if cur.fetchone is not None:
+            return 'failed'
+        else:
+            # execute the INSERT statement
+            cur.execute(sql, (username, password, ct, ct))
+            # commit the changes to the database
+            conn.commit()
+
+        # close communication with the database
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return 'success'
 #This is needed if we want to force user logins, leaving commented out for now
 
 def require_login(f):
@@ -72,9 +105,12 @@ def createaccount():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        return redirect(url_for('about'))
+        result = insert_user(username, password)
+        if result == 'failed':
+            flash('This Username already exists, please try another')
+        else:
+            return redirect(url_for('about'))
     return render_template("createaccount.html")
 
 if __name__ == '__main__':
-    connection = connect()
     app.run(host='localhost', port=8080, debug=True)
