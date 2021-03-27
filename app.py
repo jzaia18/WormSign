@@ -67,6 +67,14 @@ def login():
         return redirect(url_for('about'))
     return render_template("login.html")
 
+@app.route("/createaccount", methods=['GET','POST'])
+def createaccount():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        return redirect(url_for('about'))
+    return render_template("createaccount.html")
+
 if __name__ == '__main__':
     connection = connect()
     app.run(host='localhost', port=8080, debug=True)
