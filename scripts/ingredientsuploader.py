@@ -43,8 +43,6 @@ def ingredients_uploader():
             if have_ingr is False:
                 ingredients_list.append(new_ingredient.get_list())
 
-            if len(ingredients_list) > 9:
-                break
 
     sql = """INSERT INTO "Ingredients"("IngredientId", "IngredientName", "Aisle", "MeasurementUnit") VALUES(%s, %s, %s, %s)"""
     conn = None
