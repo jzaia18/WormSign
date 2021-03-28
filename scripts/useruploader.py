@@ -1,7 +1,6 @@
 import csv
 import datetime
 import random
-
 import psycopg2 as psycopg2
 import time
 from random_username.generate import generate_username
@@ -19,9 +18,13 @@ class user:
 
     def getList(self):
         user = []
-        user.append(self.id); user.append(self.username); user.append(self.password)
-        user.append(self.datejoined); user.append(self.lastaccessdate)
+        user.append(self.id);
+        user.append(self.username);
+        user.append(self.password)
+        user.append(self.datejoined);
+        user.append(self.lastaccessdate)
         return user
+
 
 def user_uploader():
     start = time.time()
@@ -42,15 +45,15 @@ def user_uploader():
             new_user = user(row[0], new_usernames_list[count], passwords_list[count], ct, ct)
             user_list.append(new_user.getList())
             count += 1
-            if count == 5000: # this means end at recipe #15000
+            if count == 5000:  # this means end at recipe #15000
                 break
 
-    """ insert multiple vendors into the vendors table  """
     sql = """INSERT INTO "Users"("UserId", "Username", "Password", "DateJoined", "LastAccessDate") VALUES(%s, %s, %s, %s, %s)"""
     conn = None
     try:
         # connect to the PostgreSQL database
-        conn = conn = psycopg2.connect(host="reddwarf.cs.rit.edu", database="p320_03f", user="p320_03f", password="KFnU9gXi7JFk")
+        conn = conn = psycopg2.connect(host="reddwarf.cs.rit.edu", database="p320_03f", user="p320_03f",
+                                       password="KFnU9gXi7JFk")
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement

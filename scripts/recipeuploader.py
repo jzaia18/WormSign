@@ -50,7 +50,6 @@ def recipe_uploader():
             if count == 5000: # this means end at recipe #15000
                 break
 
-    """ insert multiple vendors into the vendors table  """
     sql = """INSERT INTO "Recipes"("RecipeId", "RecipeName", "Description", "Servings", "CookTime", "Difficulty", "Steps", "UserId", "CreationDate") VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     conn = None
     try:
