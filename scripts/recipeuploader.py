@@ -35,14 +35,19 @@ def recipe_uploader():
         # skip first row
         next(csv_reader)
         for row in csv_reader:
-            count += 1
-            if count <= 5000: # this means start at recipe #5000
+            # we dont want UserIds greater than 20000
+            if int(row[3]) > 20000:
                 continue
-            #recipeList.append(recipe(row[1], row[0], row[9], random.choice(servingsList), row[2], random.choice(difficultiesList), row[7], row[3], row[4]))
+            # we dont want RecipeIds greater than 25000
+            if int(row[1]) > 25000:
+                continue
+            #if count <= 45000: # this means start at recipe #5000
+            #   continue
+            count += 1
             newrecipe = recipe(row[1], row[0], row[9][:1000], random.choice(servingsList), row[2], random.choice(difficultiesList), row[8][:1000],
                    row[3], row[4])
             recipeList.append(newrecipe.getList())
-            if count == 15000: # this means end at recipe #15000
+            if count == 5000: # this means end at recipe #15000
                 break
 
     """ insert multiple vendors into the vendors table  """
