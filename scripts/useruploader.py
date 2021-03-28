@@ -18,19 +18,18 @@ class user:
         self.lastaccessdate = LastAccessDate
 
     def getList(self):
-        recipe = []
-        recipe.append(self.id); recipe.append(self.username); recipe.append(self.password)
-        recipe.append(self.datejoined); recipe.append(self.lastaccessdate)
-        return recipe
+        user = []
+        user.append(self.id); user.append(self.username); user.append(self.password)
+        user.append(self.datejoined); user.append(self.lastaccessdate)
+        return user
 
 def user_uploader():
     start = time.time()
-    userList = []
+    user_list = []
     ct = datetime.datetime.utcnow()
-    i = 0
-    usernamesList = generate_username(5000)
-    newusernamesList = [username + str(random.randint(0, 100000000)) for username in usernamesList]
-    passwordsList = generate_passwords(5000)
+    usernames_list = generate_username(5000)
+    new_usernames_list = [username + str(random.randint(0, 100000000)) for username in usernames_list]
+    passwords_list = generate_passwords(5000)
     count = 0
     with open('data/PP_users.csv', encoding='utf8') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -40,8 +39,8 @@ def user_uploader():
             # we dont want UserIds greater than 20000
             if int(row[0]) > 20000:
                 continue
-            newuser = user(row[0], newusernamesList[count], passwordsList[count], ct, ct)
-            userList.append(newuser.getList())
+            new_user = user(row[0], new_usernames_list[count], passwords_list[count], ct, ct)
+            user_list.append(new_user.getList())
             count += 1
             if count == 5000: # this means end at recipe #15000
                 break
@@ -55,7 +54,7 @@ def user_uploader():
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
-        for userinfo in userList:
+        for userinfo in user_list:
             cur.execute(sql, (userinfo[0], userinfo[1], userinfo[2], userinfo[3], userinfo[4]))
         # commit the changes to the database
         conn.commit()
