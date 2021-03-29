@@ -4,6 +4,7 @@ import os, json
 
 from utils.config import config
 from utils.login import insert_user, login_user
+from utils.search_recipe import search_recipe
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -63,6 +64,20 @@ def createaccount():
             flash('Account successfully created!')
             return redirect(url_for('about'))
     return render_template("createaccount.html", error=error)
+
+
+@app.route("/home", methods=['GET', 'POST'])
+def findrecipe():
+    notfound = None
+    if request.method == 'POST':
+        # what the user entered
+        keyword = request.form['keyword']
+        # results from searching the db
+        results = search_recipe(keyword)
+        # checks to see if there was at least one result
+        if len(results) == 0:
+            notfound = 'No recipes found'
+    return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
 
 if __name__ == '__main__':

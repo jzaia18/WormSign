@@ -8,18 +8,38 @@
 
 {% block body %}
 <div id="wrapper">
-  <h3>
-    Welcome to the test app!
-  </h3>
+  <h2>
+    Welcome to Recipe Manager
+  </h2>
+
   <br />
 
-  <img src="../static/img/wormsign.png" />
+  <h5>
+    Search for any recipe
+  </h5>
+  <form method="post" action="">
+    <p></p><input type="text" style="width:400px;" name="keyword" value="" placeholder="Enter a name, ingredient, or category"></p>
+    <p class="submit"><input type="submit" name="commit" value="Search"></p>
+  </form>
   <br />
+  {% if notfound %}
+  <h4>
+    {{ notfound }}
+  </h4>
+  {% else %}
+    {% if keyword %}
+    <h4>
+      Showing results for {{ keyword }}
+    </h4>
+      <br />
+      {% for recipe in results %}
+        <tr>
+          {{ recipe[1] }}
+          <br />
+        </tr>
+      {% endfor %}
+    {% endif %}
+  {% endif %}
 
-  Go to <a href="/home">the /home route</a> to see a message below:
-  <br />
-  <br />
-
-  {{test}}
 </div>
 {% endblock %}
