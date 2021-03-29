@@ -40,8 +40,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
         loginresult = login_user(username, password)
-        if loginresult == 'failed':
-            error = 'Incorrect Username and Password'
+        if loginresult == 'no-account':
+            error = 'Account with that Username does not exist'
+        elif loginresult == 'failed':
+            error = 'Incorrect Password'
         else:
             flash('Successfully logged in')
             return redirect(url_for('about'))
