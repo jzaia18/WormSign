@@ -28,7 +28,7 @@ def root():
     return render_template("home.html")
 
 
-@app.route("/home", methods=['GET', 'POST'])
+@app.route("/home")
 def about():
     return render_template("home.html", test=example_util.example_fxn())
 
