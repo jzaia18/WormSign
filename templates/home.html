@@ -17,9 +17,18 @@
   <h5>
     Search for any recipe
   </h5>
+
   <form method="post" action="">
-    <p></p><input type="text" style="width:400px;" name="keyword" value="" placeholder="Enter a name, ingredient, or category"></p>
-    <p class="submit"><input type="submit" name="commit" value="Search"></p>
+    Search by:
+    <input type="radio" name="searchType" id="name" value="name" checked/>
+    <label for="name">Name</label>
+    <input type="radio" name="searchType" id="ingredient" value="ingredient"/>
+    <label for="ingredient">Ingredient</label>
+    <input type="radio" name="searchType" id="category" value="category"/>
+    <label for="category">Category</label>
+    <br />
+    <input type="text" style="width:400px;" name="keyword" value="" placeholder="Enter a name, ingredient, or category"></p>
+    <input type="submit" name="commit" value="Search">
   </form>
   <br />
   {% if notfound %}

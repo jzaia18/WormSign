@@ -69,11 +69,13 @@ def createaccount():
 @app.route("/home", methods=['GET', 'POST'])
 def findrecipe():
     notfound = None
+    error = None
     if request.method == 'POST':
         # what the user entered
+        searchType = request.form['searchType']
         keyword = request.form['keyword']
         # results from searching the db
-        results = search_recipe(keyword)
+        results = search_recipe(searchType, keyword)
         # checks to see if there was at least one result
         if len(results) == 0:
             notfound = 'No recipes found'

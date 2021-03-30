@@ -3,10 +3,17 @@ import psycopg2 as psycopg2
 from utils.config import config
 
 
-def search_recipe(keyword):
+def search_recipe(searchType, keyword):
     """ finds recipe based on search """
     global results
-    checkname = """SELECT "RecipeId", "RecipeName" FROM "Recipes" WHERE "RecipeName" LIKE '%{}%';""".format(keyword)
+    if searchType == 'name':
+        checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
+                        WHERE "RecipeName" LIKE '%{}%';""".format(keyword)
+    elif searchType == 'ingredient':
+        checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
+                        WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
+                        Z."IngredientName" LIKE '%{}%';""".format(keyword)
+    # elif searchType == 'category':
 
     conn = None
     try:
@@ -17,7 +24,7 @@ def search_recipe(keyword):
         # create a new cursor
         cur = conn.cursor()
         # check if user exists
-        cur.execute(checkname)
+        cur.execute(checkdb)
         # store all results
         results = cur.fetchall()
         # close the cursor
