@@ -15,7 +15,6 @@ def require_login(f):
     # @wraps(f)
     def inner(*args, **kwargs):
         if 'user' not in session:
-            flash('Please log in')
             return redirect(url_for('login'))
         else:
             return f(*args, **kwargs)
@@ -29,7 +28,7 @@ def root():
     return render_template("home.html")
 
 
-@app.route("/home")
+@app.route("/home", methods=['GET', 'POST'])
 def about():
     return render_template("home.html", test=example_util.example_fxn())
 
@@ -51,8 +50,8 @@ def login():
     return render_template("login.html", error=error)
 
 
-@app.route("/createaccount", methods=['GET', 'POST'])
-def createaccount():
+@app.route("/create_account", methods=['GET', 'POST'])
+def create_account():
     error = None
     if request.method == 'POST':
         username = request.form['username']
@@ -63,7 +62,7 @@ def createaccount():
         else:
             flash('Account successfully created!')
             return redirect(url_for('about'))
-    return render_template("createaccount.html", error=error)
+    return render_template("create_account.html", error=error)
 
 
 @app.route("/home", methods=['GET', 'POST'])
