@@ -89,6 +89,7 @@ def find_recipe():
 
 @app.route("/make_category", methods=['GET','POST'])
 def make_category():
+    error = None
     if request.method == 'POST':
         category_name = request.form['category_name']
         create_category_result = create_category(session['id'], category_name)
