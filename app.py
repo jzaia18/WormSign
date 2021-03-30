@@ -65,7 +65,7 @@ def create_account():
     return render_template("create_account.html", error=error)
 
 
-@app.route("/home", methods=['GET', 'POST'])
+@app.route("/findrecipes", methods=['GET', 'POST'])
 def findrecipe():
     notfound = None
     error = None
