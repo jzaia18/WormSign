@@ -30,22 +30,25 @@ def user_uploader():
     start = time.time()
     user_list = []
     ct = datetime.datetime.utcnow()
-    usernames_list = generate_username(5000)
+    usernames_list = generate_username(10005)
     new_usernames_list = [username + str(random.randint(0, 100000000)) for username in usernames_list]
-    passwords_list = generate_passwords(5000)
+    passwords_list = generate_passwords(10005)
     count = 0
     with open('data/PP_users.csv', encoding='utf8') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         # skip first row
         next(csv_reader)
         for row in csv_reader:
+            if count < 10000: # skip those under 5011
+                count +=1
+                continue
             # we dont want UserIds greater than 20000
             if int(row[0]) > 20000:
                 continue
-            new_user = user(row[0], new_usernames_list[count], passwords_list[count], ct, ct)
+            new_user = user(row[0], new_usernames_list[count-10000], passwords_list[count-10000], ct, ct)
             user_list.append(new_user.getList())
             count += 1
-            if count == 5000:  # this means end at recipe #15000
+            if count == 20001:  # this means end at recipe #15000
                 break
 
     sql = """INSERT INTO "Users"("UserId", "Username", "Password", "DateJoined", "LastAccessDate") VALUES(%s, %s, %s, %s, %s)"""
