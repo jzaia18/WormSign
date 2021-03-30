@@ -5,6 +5,7 @@ from utils.config import config
 
 def search_recipe(searchType, keyword):
     """ finds recipe based on search """
+    global results
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
                         WHERE "RecipeName" LIKE '%{}%';""".format(keyword)
