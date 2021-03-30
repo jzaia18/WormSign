@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Create Recipe{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/create_recipe.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="create_recipe">
+  <h1>Create new Recipe!</h1>
+  <div id="createrecipe-wrapper">
+    <form method="post" action="/createrecipe">
+      <label for="RecipeName-input">Recipe Name:</label>
+      <input type="text" id="RecipeName-input" name="RecipeName" />
+      <br />
+
+      <label for="Description-input">Description:</label>
+      <textarea id="Description-input" name="Description"> </textarea>
+      <br />
+
+      <label for="Servings-input">Servings:</label>
+      <input type="number" min="1" max="100" id="Servings-input" name="Servings" />
+      <br />
+
+      <label for="CookTime-input">Cook Time (mins):</label>
+      <input type="number" min="1" max="1440" id="CookTime-input" name="CookTime" />
+      <br />
+
+      <label for="Difficulty-input">Difficulty (1-5):</label>
+      <input type="number" min="1" max="5" id="Difficulty-input" name="Difficulty" />
+      <br />
+
+      <label for="RecipeName-input">Recipe Name:</label>
+      <textarea name="Steps"> </textarea>
+      <br />
+    </form>
+  </div>
+</div>
+{% endblock %}

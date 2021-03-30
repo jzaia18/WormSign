@@ -52,6 +52,12 @@ def login():
             return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
+@require_login
+@app.route("/createrecipe", methods=['GET', 'POST'])
+def create_recipe():
+    if request.method == 'POST':
+        pass
+    return render_template("create_recipe.html")
 
 @app.route("/create_account", methods=['GET', 'POST'])
 def create_account():
