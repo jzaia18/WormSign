@@ -33,6 +33,7 @@ def insert_user(username, password):
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+        return 'failed'
     finally:
         if conn is not None:
             conn.close()
@@ -77,6 +78,7 @@ def login_user(username, password):
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+        return 'failed'
     finally:
         if conn is not None:
             conn.close()

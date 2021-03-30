@@ -48,6 +48,7 @@ def login():
             error = 'Incorrect Password'
         else:
             flash('Successfully logged in')
+            session['user'] = username
             return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
@@ -63,6 +64,7 @@ def create_account():
             error = 'This Username already exists, please try another'
         else:
             flash('Account successfully created!')
+            session['user'] = username
             return redirect(url_for('home'))
     return render_template("create_account.html", error=error)
 
