@@ -68,7 +68,6 @@ def create_account():
 @app.route("/home", methods=['GET', 'POST'])
 def findrecipe():
     notfound = None
-    error = None
     if request.method == 'POST':
         # what the user entered
         searchType = request.form['searchType']
