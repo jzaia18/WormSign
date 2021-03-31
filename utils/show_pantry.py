@@ -8,7 +8,7 @@ def show_pantry(uid):
     global results
     checkdb = """SELECT I."IngredientName", P."CurrentQuantity" FROM "UserOrders" U, "OrderIngredients" O, "Ingredients" I, "Pantry" P
                         WHERE U."UserId" = '{}' AND U."OrderId" = O."OrderId" AND
-                             O."IngredientId" = I."IngredientId";""".format(uid)
+                             O."IngredientId" = I."IngredientId" AND U."OrderId" = P."OrderId";""".format(uid)
     conn = None
     try:
         # read database configuration

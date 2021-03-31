@@ -7,6 +7,7 @@ from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
 from utils.create_category import create_category
+from utils.show_pantry import show_pantry
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -86,6 +87,20 @@ def find_recipe():
         if len(results) == 0:
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
+
+
+@app.route("/showpantry", methods=['POST'])
+def showpantry():
+    noResults = None
+    error = None
+    # results from searching the db
+    uid = session['id']
+    results = show_pantry(uid)
+    # checks to see if there was at least one result
+    if len(results) == 0:
+        noResults = 'No Pantry Data!'
+    return render_template("home.html", results=results, noResults=noResults, uid=uid)
+
 
 @app.route("/make_category", methods=['GET','POST'])
 def make_category():
