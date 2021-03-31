@@ -80,6 +80,21 @@ def findrecipe():
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
+@app.route("/managepantry", methods=['GET', 'POST'])
+def managepantry():
+    notfound = None
+    error = None
+    # if request.method == 'POST':
+        # what the user entered
+        # sortType = request.form['sortType']
+        # keyword = request.form['keyword']
+        # results from searching the db
+        # results = search_recipe(sortType, keyword)
+        # checks to see if there was at least one result
+        # if len(results) == 0:
+            # notfound = 'No recipes found'
+    return render_template("home.html")
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
