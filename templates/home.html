@@ -86,6 +86,7 @@
         <tr>
           <th>Ingredient</th>
           <th>Amount</th>
+          <th>Exp. Date</th>
         </tr>
       </thead>
       <tbody>
@@ -93,6 +94,7 @@
           <tr>
             <td>{{ order[0] }}</td>
             <td>{{ order[1] }}</td>
+            <td>{{ order[2] }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -101,9 +103,27 @@
   {% endif %}
 
   <form method="post" action="/showpantry">
-      <br />
-      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="Enter your pantry order"></p>
-      <input type="submit" name="commit" value="Search">
+    <h5>
+      Make an addition to your pantry:
+    </h5>
+    <div class="block">
+      <label>Ingredient Name</label>
+      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt">
+    </div>
+    <div class="block">
+      <label>Amount</label>
+      <input type="number" name="amount" value="">
+    </div>
+    <div class="block">
+      <label>Purchase Date</label>
+      <input type="date" name="buy_date" value="2021-05-31">
+    </div>
+    <div class="block">
+      <label>Expiration Date</label>
+      <input type="date" name="exp_date" value="2021-05-31">
+    </div>
+    <br />
+    <input type="submit" name="commit" value="Search">
   </form>
 
 </div>

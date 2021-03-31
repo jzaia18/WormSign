@@ -7,7 +7,7 @@ from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
 from utils.create_category import create_category
-from utils.show_pantry import show_pantry
+from utils.show_pantry import show_pantry, update_pantry
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -95,6 +95,12 @@ def showpantry():
     error = None
     # results from searching the db
     uid = session['id']
+    ingredient = request.form['pantry_order']
+    amount = request.form['amount']
+    purchased = request.form['buy_date']
+    expires = request.form['exp_date']
+
+    update_pantry(ingredient, amount, purchased, expires, uid) # update with form info
     results = show_pantry(uid)
     # checks to see if there was at least one result
     if len(results) == 0:
@@ -102,7 +108,7 @@ def showpantry():
     return render_template("home.html", results=results, noResults=noResults, uid=uid)
 
 
-@app.route("/make_category", methods=['GET','POST'])
+@app.route("/make_category", methods=['GET', 'POST'])
 def make_category():
     error = None
     if request.method == 'POST':
