@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from functools import wraps
 from utils import example_util
 import os, json
 
@@ -12,7 +13,7 @@ app.secret_key = os.urandom(16)
 
 
 def require_login(f):
-    # @wraps(f)
+    @wraps(f)
     def inner(*args, **kwargs):
         if 'user' not in session:
             return redirect(url_for('login'))
@@ -25,11 +26,12 @@ def require_login(f):
 @app.route("/")
 @require_login
 def root():
-    return render_template("home.html")
+    return redirect(url_for("home"))
 
 
 @app.route("/home")
-def about():
+@require_login
+def home():
     return render_template("home.html", test=example_util.example_fxn())
 
 
@@ -46,7 +48,8 @@ def login():
             error = 'Incorrect Password'
         else:
             flash('Successfully logged in')
-            return redirect(url_for('about'))
+            session['user'] = username
+            return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
 
@@ -61,12 +64,13 @@ def create_account():
             error = 'This Username already exists, please try another'
         else:
             flash('Account successfully created!')
-            return redirect(url_for('about'))
+            session['user'] = username
+            return redirect(url_for('home'))
     return render_template("create_account.html", error=error)
 
 
-@app.route("/home", methods=['GET', 'POST'])
-def findrecipe():
+@app.route("/findrecipes", methods=['POST'])
+def find_recipe():
     notfound = None
     error = None
     if request.method == 'POST':
@@ -79,7 +83,6 @@ def findrecipe():
         if len(results) == 0:
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
-
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
