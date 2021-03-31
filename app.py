@@ -56,7 +56,7 @@ def login():
 @app.route("/createrecipe", methods=['GET', 'POST'])
 def create_recipe():
     if request.method == 'POST':
-        pass
+        print(request.form)
     return render_template("create_recipe.html")
 
 @app.route("/create_account", methods=['GET', 'POST'])

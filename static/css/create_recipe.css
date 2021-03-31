@@ -1,0 +1,11 @@
+#input-table td {
+    text-align: right;
+}
+
+input {
+    width: 100%;
+}
+
+textarea {
+    width: 100%;
+}
