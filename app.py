@@ -5,7 +5,7 @@ import os, json
 
 from utils.config import config
 from utils.login import insert_user, login_user
-from utils.search_recipe import search_recipe
+from utils.search_recipe import *
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -82,6 +82,12 @@ def find_recipe():
         if len(results) == 0:
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
+
+@app.route("/recipe")
+def display_recipe():
+    recipeid = request.args.get('id')
+    recipe = get_recipe(recipeid)
+    return render_template("recipe.html", recipe=recipe)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

@@ -2,7 +2,6 @@ import psycopg2 as psycopg2
 
 from utils.config import config
 
-
 def search_recipe(searchType, keyword):
     """ finds recipe based on search """
     global results
@@ -35,3 +34,29 @@ def search_recipe(searchType, keyword):
         if conn is not None:
             conn.close()
     return results
+
+
+def get_recipe(recipeid):
+    global results
+    # get recipe entity based on id
+    retrieve = """SELECT * FROM "Recipes" WHERE "RecipeId" = '{}';""".format(recipeid)
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+        cur.execute(retrieve)
+        # store all results
+        recipe = cur.fetchall()
+        # close the cursor
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return recipe

@@ -43,7 +43,7 @@
       <br />
       {% for recipe in results %}
         <tr>
-          {{ recipe[1] }}
+          <a href="/recipe?id={{ recipe[0] }}">{{ recipe[1] }}</a>
           <br />
         </tr>
       {% endfor %}
