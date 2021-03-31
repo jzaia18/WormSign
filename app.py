@@ -87,7 +87,9 @@ def find_recipe():
 def display_recipe():
     recipeid = request.args.get('id')
     recipe = get_recipe(recipeid)
-    return render_template("recipe.html", recipe=recipe)
+    creator = get_creator(recipe[7])
+    ingredients = get_ingredients(recipeid)
+    return render_template("recipe.html", recipe=recipe, creator=creator, ingredients=ingredients)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

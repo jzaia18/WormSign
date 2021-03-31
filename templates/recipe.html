@@ -7,7 +7,43 @@
 {% endblock %}
 
 {% block body %}
-ayo
-<br />
-{{ id }}
+    <p>
+        <h1>
+            {{ recipe[1] }}
+        </h1>
+        Written on {{ recipe[8] }} by {{ creator[0] }}
+
+
+    <p>
+        <h6>
+            {{ recipe[2] }}
+        </h6>
+        <br />
+        <h4>
+            Servings: {{ recipe[3] }}
+            <br />
+            Cook Time: {{ recipe[4] }}
+            <br />
+            Difficulty: {{ recipe[5] }}
+            <br />
+        </h4>
+    </p>
+    <br />
+    <h2>
+        Ingredients
+    </h2>
+    <p>
+        {% for ingredient in ingredients %}
+        {{ ingredient[0] }}
+        <br/>
+        {% endfor %}
+    </p>
+    <br/>
+    <h2>
+        Steps
+    </h2>
+    <p>
+        {{ recipe[6] }}
+    </p>
+
 {% endblock %}
