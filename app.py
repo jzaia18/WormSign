@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from functools import wraps
 from utils import example_util
 import os, json
 
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
-from utils.show_pantry import show_pantry
+from utils.create_category import create_category
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -13,7 +14,7 @@ app.secret_key = os.urandom(16)
 
 
 def require_login(f):
-    # @wraps(f)
+    @wraps(f)
     def inner(*args, **kwargs):
         if 'user' not in session:
             return redirect(url_for('login'))
@@ -26,11 +27,12 @@ def require_login(f):
 @app.route("/")
 @require_login
 def root():
-    return render_template("home.html")
+    return redirect(url_for("home"))
 
 
 @app.route("/home")
-def about():
+@require_login
+def home():
     return render_template("home.html", test=example_util.example_fxn())
 
 
@@ -40,14 +42,16 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        loginresult = login_user(username, password)
-        if loginresult == 'no-account':
+        login_result, user_id = login_user(username, password)
+        if login_result == 'no-account':
             error = 'Account with that Username does not exist'
-        elif loginresult == 'failed':
+        elif login_result == 'failed':
             error = 'Incorrect Password'
         else:
             flash('Successfully logged in')
-            return redirect(url_for('about'))
+            session['user'] = username
+            session['id'] = user_id
+            return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
 
@@ -57,17 +61,19 @@ def create_account():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        insertresult = insert_user(username, password)
-        if insertresult == 'failed':
+        insert_result, user_id = insert_user(username, password)
+        if insert_result == 'failed':
             error = 'This Username already exists, please try another'
         else:
             flash('Account successfully created!')
-            return redirect(url_for('about'))
+            session['user'] = username
+            session['id'] = user_id
+            return redirect(url_for('home'))
     return render_template("create_account.html", error=error)
 
 
-@app.route("/findrecipes", methods=['GET', 'POST'])
-def findrecipe():
+@app.route("/findrecipes", methods=['POST'])
+def find_recipe():
     notfound = None
     error = None
     if request.method == 'POST':
@@ -81,21 +87,19 @@ def findrecipe():
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
-
-@app.route("/showpantry", methods=['GET', 'POST'])
-def showpantry():
-    noResults = None
+@app.route("/make_category", methods=['GET','POST'])
+def make_category():
     error = None
     if request.method == 'POST':
-        # what the user entered
-        uid = request.form['keyword']
-        # results from searching the db
-        results = show_pantry(uid)
-        # checks to see if there was at least one result
-        if len(results) == 0:
-            noResults = 'Nothing in pantry!'
-    return render_template("home.html", results=results, noResults=noResults, keyword=uid)
+        category_name = request.form['category_name']
+        create_category_result = create_category(session['id'], category_name)
+        if create_category_result == 'failed':
+            error = 'You already have a category with this name, please try another'
+        else:
+            flash('Category successfully created!')
+            return redirect(url_for('home'))
 
+    return render_template("make_category.html", error=error)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
