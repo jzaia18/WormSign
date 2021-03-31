@@ -7,7 +7,7 @@ from utils.config import config
 def insert_user(username, password):
     """ insert a new user into the users table """
     check_sql = """SELECT * FROM "Users" WHERE "Username" = '{}';""".format(username)
-    sql = """INSERT INTO "Users"("Username", "Password", "DateJoined", "LastAccessDate") VALUES(%s, %s, %s, %s)"""
+    sql = """INSERT INTO "Users"("Username", "Password", "DateJoined", "LastAccessDate") VALUES(%s, %s, %s, %s) RETURNING "UserId" """
     ct = datetime.datetime.utcnow()
     conn = None
     try:
@@ -22,10 +22,11 @@ def insert_user(username, password):
         user = cur.fetchone()
 
         if user is not None:
-            return 'failed'
+            return 'failed', None
         else:
             # execute the INSERT statement
             cur.execute(sql, (username, password, ct, ct))
+            user_id = cur.fetchone()[0]
             # commit the changes to the database
             conn.commit()
 
@@ -33,11 +34,11 @@ def insert_user(username, password):
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-        return 'failed'
+        return 'failed', None
     finally:
         if conn is not None:
             conn.close()
-    return 'success'
+    return 'success', user_id
 
 
 def login_user(username, password):
@@ -59,7 +60,7 @@ def login_user(username, password):
         user = cur.fetchone()
         # if user is empty this user doesn't exist failed
         if user is None:
-            return 'no-account'
+            return 'no-account', None
 
         # if the user is not empty check the password
         cur.execute(check_user_password)
@@ -67,7 +68,7 @@ def login_user(username, password):
 
         # if user is empty this login failed
         if user_and_password is None:
-            return 'failed'
+            return 'failed', None
         else:
             # execute the UPDATE statement
             cur.execute(sql)
@@ -78,8 +79,8 @@ def login_user(username, password):
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-        return 'failed'
+        return 'failed', None
     finally:
         if conn is not None:
             conn.close()
-    return 'success'
+    return 'success', user[0]

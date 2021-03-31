@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Make Category{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="login">
+  <h1>Make a new category</h1>
+        {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+  <form method="post" action="">
+    <p><input type="text" name="category_name" value="" placeholder="Category Name"></p>
+    <p class="submit"><input type="submit" name="commit" value="Submit"></p>
+  </form>
+</div>
+
+{% endblock %}
