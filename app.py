@@ -5,6 +5,7 @@ import os, json
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
+from utils.show_pantry import show_pantry
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -80,20 +81,20 @@ def findrecipe():
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
-@app.route("/managepantry", methods=['GET', 'POST'])
-def managepantry():
-    notfound = None
+
+@app.route("/showpantry", methods=['GET', 'POST'])
+def showpantry():
+    noResults = None
     error = None
-    # if request.method == 'POST':
+    if request.method == 'POST':
         # what the user entered
-        # sortType = request.form['sortType']
-        # keyword = request.form['keyword']
+        uid = request.form['keyword']
         # results from searching the db
-        # results = search_recipe(sortType, keyword)
+        results = show_pantry(uid)
         # checks to see if there was at least one result
-        # if len(results) == 0:
-            # notfound = 'No recipes found'
-    return render_template("home.html")
+        if len(results) == 0:
+            noResults = 'Nothing in pantry!'
+    return render_template("home.html", results=results, noResults=noResults, keyword=uid)
 
 
 if __name__ == '__main__':

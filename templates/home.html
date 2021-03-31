@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-
+<!--
 <style>
 table, th, td {
   border: 1px solid black;
@@ -38,6 +38,32 @@ table, th, td {
   </tr>
 </table>
 <br />
+-->
+
+<form method="post" action="/showpantry">
+    <br />
+    <input type="text" style="width:400px;" name="keyword" value="" placeholder="Enter uid"></p>
+    <input type="submit" name="commit" value="Search">
+  </form>
+
+{% if noResults %}
+  <h4>
+    {{ noResults }}
+  </h4>
+  {% else %}
+    {% if keyword %}
+    <h4>
+      Pantry for user {{ keyword }}
+    </h4>
+      <br />
+      {% for order in results %}
+        <tr>
+          {{ order }}
+          <br />
+        </tr>
+      {% endfor %}
+    {% endif %}
+  {% endif %}
 
 <div id="wrapper">
   <h2>

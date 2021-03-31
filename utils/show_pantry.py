@@ -6,9 +6,9 @@ from utils.config import config
 def show_pantry(uid):
     """ gets a user's pantry data """
     global results
-    checkdb = """SELECT I."IngredientName" FROM "UserOrders" U, "OrderIngredients" O, "Ingredients" I, 
-                        WHERE U."UserId" = '%{}%' AND U."OrderId" = O."OrderId" AND 
-                        O."IngredientId" = I."IngredientId";""".format(uid)
+    checkdb = """SELECT I."IngredientName", P."CurrentQuantity" FROM "UserOrders" U, "OrderIngredients" O, "Ingredients" I, "Pantry" P
+                        WHERE U."UserId" = '{}' AND U."OrderId" = O."OrderId" AND
+                             O."IngredientId" = I."IngredientId";""".format(uid)
     conn = None
     try:
         # read database configuration
