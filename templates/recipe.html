@@ -22,7 +22,7 @@
         <h4>
             Servings: {{ recipe[3] }}
             <br />
-            Cook Time: {{ recipe[4] }}
+            Cook Time: {{ recipe[4] }} minutes
             <br />
             Difficulty: {{ recipe[5] }}
             <br />
@@ -32,18 +32,19 @@
     <h2>
         Ingredients
     </h2>
-    <p>
+    <ul>
         {% for ingredient in ingredients %}
-        {{ ingredient[0] }}
-        <br/>
+        <li>{{ ingredient[0] }}</li>
         {% endfor %}
-    </p>
+    </ul>
     <br/>
     <h2>
         Steps
     </h2>
-    <p>
-        {{ recipe[6] }}
-    </p>
+    <ol>
+        {% for step in steps %}
+        <li>{{ step }}</li></p>
+        {% endfor %}
+    </ol>
 
 {% endblock %}

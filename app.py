@@ -83,13 +83,16 @@ def find_recipe():
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
+
 @app.route("/recipe")
 def display_recipe():
     recipeid = request.args.get('id')
     recipe = get_recipe(recipeid)
     creator = get_creator(recipe[7])
     ingredients = get_ingredients(recipeid)
-    return render_template("recipe.html", recipe=recipe, creator=creator, ingredients=ingredients)
+    steps = format_steps(recipe[6])
+    return render_template("recipe.html", recipe=recipe, creator=creator, ingredients=ingredients, steps=steps)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

@@ -114,3 +114,8 @@ def get_ingredients(recipeid):
     return ingredients
 
 
+def format_steps(steps):
+    steps = steps.replace("[\'", '')
+    steps = steps.replace("\']", '')
+    steps = steps.split("\', \'")
+    return steps
