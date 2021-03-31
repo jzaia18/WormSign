@@ -15,7 +15,8 @@ app.secret_key = os.urandom(16)
 def require_login(f):
     @wraps(f)
     def inner(*args, **kwargs):
-        if 'user' not in session:
+        print('test')
+        if 'user' not in session or not session.get('user'):
             return redirect(url_for('login'))
         else:
             return f(*args, **kwargs)
@@ -52,12 +53,14 @@ def login():
             return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
-@require_login
+
 @app.route("/createrecipe", methods=['GET', 'POST'])
+@require_login
 def create_recipe():
     if request.method == 'POST':
         print(request.form)
-    return render_template("create_recipe.html")
+    return render_template("create_recipe.html", user=session.get('user'))
+
 
 @app.route("/create_account", methods=['GET', 'POST'])
 def create_account():

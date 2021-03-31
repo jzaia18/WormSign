@@ -1,9 +1,23 @@
-#input-table td {
-    text-align: right;
+.recipe-text-input input {
+    width: 100%;
 }
 
-input {
-    width: 100%;
+.recipe-number-input input {
+    width: 7rem;
+}
+
+.recipe-range-input input {
+    display: block;
+}
+
+.recipe-input {
+    max-width: 720px;
+    margin-bottom: 1%;
+}
+
+.input-unit {
+    margin-left: -3.5rem;
+    width: 0;
 }
 
 textarea {

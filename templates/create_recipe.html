@@ -9,73 +9,62 @@
 {% block body %}
 <div class="create_recipe">
   <h1>Create new Recipe!</h1>
+
+  <br />
+
   <div id="createrecipe-wrapper">
     <form method="post" action="/createrecipe">
-      <table id="input-table">
-        <tr>
-          <td>
-            <label for="RecipeName-input">Recipe Name:</label>
-          </td>
-          <td>
-            <input type="text" id="RecipeName-input" name="RecipeName" />
-          </td>
-        </tr>
+      <div id="recipe-input-wrapper">
 
-        <tr>
-          <td>
-            <label for="Description-input">Description:</label>
-          </td>
-          <td>
-            <textarea id="Description-input" name="Description"> </textarea>
-          </td>
-        </tr>
+        <div class="recipe-input recipe-text-input">
+          <label for="RecipeName-input">Recipe Name:</label>
+          <input type="text" id="RecipeName-input" name="RecipeName" value="{{user}}'s Awesome Recipe" />
+        </div>
 
-        <tr>
-          <td>
-            <label for="Servings-input">Servings:</label>
-          </td>
-          <td>
-            <!-- TODO: show number next to this -->
-            <span> <input type="range" min="1" max="20" value="4" id="Servings-input" name="Servings" />
-          </td>
-        </tr>
+        <div class="recipe-input recipe-text-input">
+          <label for="Description-input">Description:</label>
+          <textarea id="Description-input" name="Description"> Explain what makes this recipe so special. Really grab users' attention! </textarea>
+        </div>
 
-        <tr>
-          <td>
-            <label for="CookTime-input">Cook Time (mins):</label>
-          </td>
-          <td>
-            <input type="number" min="1" max="1440" id="CookTime-input" name="CookTime" />
-          </td>
-        </tr>
+        <div class="recipe-input recipe-number-input">
+          <label for="CookTime-input">Cook Time:</label>
+          <input type="number" min="1" max="1440" value="20" id="CookTime-input" name="CookTime" /><span class="input-unit">mins</span>
+        </div>
 
-        <tr>
-          <td>
-            <label for="Difficulty-input">Difficulty (1-5):</label>
-          </td>
-          <td>
-            <input type="number" min="1" max="5" id="Difficulty-input" name="Difficulty" />
-          </td>
-        </tr>
+        <br />
 
-        <tr>
-          <td>
-            <label for="Steps-input">Steps</label>
-          </td>
-          <td>
-            <textarea id="Steps-input" name="Steps"> </textarea>
-          </td>
-        </tr>
+        <div class="recipe-input recipe-range-input">
+          <label for="Servings-input">Servings:</label>
+          <label class="range-displaynum" id="Servings-displaynum">4</label>
+          <input type="range" min="1" max="20" value="4" id="Servings-input" name="Servings" />
+        </div>
 
-        <tr>
-          <td>
-          </td>
-          <td>
-            <input id="submit-button" name="submit" type="submit" />
-          </td>
-        </tr>
-      </table>
+        <div class="recipe-input recipe-range-input">
+          <label for="Difficulty-input">Difficulty:</label>
+          <label class="range-displaynum" id="Difficulty-displaynum">1</label>
+          <input type="range" min="1" max="5" value="1" id="Difficulty-input" name="Difficulty" />
+        </div>
+
+        <br />
+
+        <div class="recipe-input recipe-text-input">
+          <label for="Ingredients-input">Ingredients</label>
+        <textarea id="Ingredients-input" name="Ingredients"> </textarea>
+        </div>
+
+        <div class="recipe-input recipe-text-input">
+          <label for="Steps-input">Steps</label>
+        <textarea id="Steps-input" name="Steps"> </textarea>
+        </div>
+
+        <div class="recipe-input">
+          <input id="submit-button" name="submit" type="submit" />
+        </div>
     </form>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/create_recipe.js') }}"> </script>
 {% endblock %}
