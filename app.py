@@ -6,6 +6,8 @@ import os, json
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import *
+from utils.search_recipe import search_recipe
+from utils.create_category import create_category
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -41,14 +43,15 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        loginresult = login_user(username, password)
-        if loginresult == 'no-account':
+        login_result, user_id = login_user(username, password)
+        if login_result == 'no-account':
             error = 'Account with that Username does not exist'
-        elif loginresult == 'failed':
+        elif login_result == 'failed':
             error = 'Incorrect Password'
         else:
             flash('Successfully logged in')
             session['user'] = username
+            session['id'] = user_id
             return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
@@ -59,12 +62,13 @@ def create_account():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        insertresult = insert_user(username, password)
-        if insertresult == 'failed':
+        insert_result, user_id = insert_user(username, password)
+        if insert_result == 'failed':
             error = 'This Username already exists, please try another'
         else:
             flash('Account successfully created!')
             session['user'] = username
+            session['id'] = user_id
             return redirect(url_for('home'))
     return render_template("create_account.html", error=error)
 
@@ -93,6 +97,20 @@ def display_recipe():
     steps = format_steps(recipe[6])
     return render_template("recipe.html", recipe=recipe, creator=creator, ingredients=ingredients, steps=steps)
 
+
+@app.route("/make_category", methods=['GET','POST'])
+def make_category():
+    error = None
+    if request.method == 'POST':
+        category_name = request.form['category_name']
+        create_category_result = create_category(session['id'], category_name)
+        if create_category_result == 'failed':
+            error = 'You already have a category with this name, please try another'
+        else:
+            flash('Category successfully created!')
+            return redirect(url_for('home'))
+
+    return render_template("make_category.html", error=error)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
