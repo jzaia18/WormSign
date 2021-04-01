@@ -78,9 +78,15 @@ def find_recipe():
     if request.method == 'POST':
         # what the user entered
         searchType = request.form['searchType']
+        sortType = request.form['sortType']
         keyword = request.form['keyword']
         # results from searching the db
-        results = search_recipe(searchType, keyword)
+        if sortType == 'alpha':
+            results = search_recipe(searchType, keyword)
+        elif sortType == 'rating':
+            results = search_recipe_rating(searchType, keyword)
+        else:
+            results = search_recipe(searchType, keyword)
         # checks to see if there was at least one result
         if len(results) == 0:
             notfound = 'No recipes found'
