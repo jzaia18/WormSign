@@ -6,17 +6,21 @@ import os, json
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
+from utils.search_ingredient import search_ingredient
+from utils.create_recipe import create_recipe
 from utils.create_category import create_category
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
 app.secret_key = os.urandom(16)
 
+DIFFICULTIES = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Very-Hard']
 
 def require_login(f):
     @wraps(f)
     def inner(*args, **kwargs):
-        if 'user' not in session:
+        if 'user' not in session or not session.get('user') or \
+           'id' not in session or not session.get('id'):
             return redirect(url_for('login'))
         else:
             return f(*args, **kwargs)
@@ -55,6 +59,30 @@ def login():
     return render_template("login.html", error=error)
 
 
+@app.route("/createrecipe", methods=['GET', 'POST'])
+@require_login
+def create_recipe_route():
+    if request.method == 'POST':
+        recipe_name = request.form['RecipeName']
+        description = request.form['Description']
+        cook_time = int(request.form['CookTime'])
+        servings = int(request.form['Servings'])
+        difficulty = DIFFICULTIES[int(request.form['Difficulty'])]
+        ingredient_list = json.loads(request.form['Ingredients'])
+        steps = request.form['Steps']
+        results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
+        #print(results)
+        return redirect(url_for('home'))
+    return render_template("create_recipe.html", user=session.get('user'))
+
+
+@app.route("/ingredientsearch", methods=['POST'])
+def ingredient_search():
+    if 'ingredient_name' not in request.form or not request.form['ingredient_name']:
+        return json.dumps({})
+    return json.dumps(search_ingredient(request.form['ingredient_name']))
+
+
 @app.route("/create_account", methods=['GET', 'POST'])
 def create_account():
     error = None
@@ -73,6 +101,7 @@ def create_account():
 
 
 @app.route("/findrecipes", methods=['POST'])
+@require_login
 def find_recipe():
     notfound = None
     error = None
@@ -87,7 +116,9 @@ def find_recipe():
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
+
 @app.route("/make_category", methods=['GET','POST'])
+@require_login
 def make_category():
     error = None
     if request.method == 'POST':
@@ -100,6 +131,7 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html", error=error)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

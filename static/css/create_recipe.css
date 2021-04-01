@@ -1,0 +1,81 @@
+.recipe-text-input input {
+    width: 100%;
+}
+
+.recipe-number-input input {
+    width: 7rem;
+}
+
+.recipe-range-input input {
+    display: block;
+}
+
+.recipe-input {
+    max-width: 600px;
+    margin-bottom: 1%;
+}
+
+.input-unit {
+    margin-left: -3.5rem;
+    width: 0;
+}
+
+#search-results-wrapper {
+    background-color: rgba(255, 255, 255, .7);
+    overflow-y: scroll;
+    max-height: 15vh;
+}
+
+#secret-ingredients-holder {
+    display: none;
+}
+
+.search-result:hover{
+    background-color: rgba(120,120,120,.2);
+}
+
+#selected-ingredients {
+    background-color: rgba(255, 255, 255, .5);
+    border: 1px solid white;
+}
+
+.selected-ingredient {
+    height: 2rem;
+    vertical-align: middle;
+}
+
+.selected-ingredient:nth-child(even) {
+    background-color: rgba(255, 255, 255, .7);
+}
+
+.selected-ingredient:nth-child(odd) {
+    background-color: rgba(120,120,120,.2);
+}
+
+
+.selected-ingredient-remove {
+    background-color: #990000;
+    border-color: #800000;
+    border-radius: 5px;
+    color: white;
+    height: 1.9rem;
+    width: 1.9rem;
+    font-size: 1rem;
+    float: right;
+}
+
+.selected-ingredient-input-remove-wrapper .selected-ingredient-amount {
+    width: 3rem;
+    height: 1.9rem;
+    display: inline;
+    float: left;
+}
+
+.selected-ingredient-input-remove-wrapper {
+    float: right;
+    width: 7rem;
+}
+
+textarea {
+    width: 100%;
+}
