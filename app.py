@@ -6,7 +6,6 @@ import os, json
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import *
-from utils.search_recipe import search_recipe
 from utils.create_category import create_category
 
 app = Flask(__name__)
@@ -111,6 +110,7 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html", error=error)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
