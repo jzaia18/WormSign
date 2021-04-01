@@ -11,11 +11,19 @@ function createIngredientsSubmission() {
 
   Array.from(ingredientsList.children).forEach(
     ingredientDiv => {
-      ingredients += ingredientDiv.id + ", ";
+      var ingredientId = ingredientDiv.id;
+      var ingredientAmount = $("#" + ingredientId + "-amount")[0].value;
+      ingredients +=  "[" + ingredientId + ", " + ingredientAmount + "], ";
     }
   );
 
   $("#secret-ingredients-holder")[0].value = ingredients.substring(0, ingredients.length-2) + "]";
+
+  console.log($("#secret-ingredients-holder")[0].value);
+}
+
+function ingredientAmountChanged(e) {
+  createIngredientsSubmission();
 }
 
 function removeSelectedIngredient(e) {
@@ -28,18 +36,31 @@ function removeSelectedIngredient(e) {
 
 function appendSelectedIngredient(e) {
   var ingredientDiv = document.createElement("div");
-
   ingredientDiv.id = e.target.id.split("-")[1];
   ingredientDiv.className = "selected-ingredient";
   ingredientDiv.innerText = e.target.innerText;
 
+  var inputRemoveWrapper = document.createElement("div");
+  inputRemoveWrapper.className = "selected-ingredient-input-remove-wrapper";
+
+  var amountInput = document.createElement("input");
+  amountInput.type = "number";
+  amountInput.min = 1;
+  amountInput.max = 100;
+  amountInput.value = 1;
+  amountInput.className = "selected-ingredient-amount";
+  amountInput.id = ingredientDiv.id + "-amount";
+  amountInput.oninput = ingredientAmountChanged;
+  inputRemoveWrapper.appendChild(amountInput);
 
   var removeButton = document.createElement("button");
   removeButton.type = "button";
   removeButton.className = "selected-ingredient-remove";
   removeButton.name = ingredientDiv.id;
   removeButton.onclick = removeSelectedIngredient;
-  ingredientDiv.appendChild(removeButton);
+  removeButton.innerText = "X";
+  inputRemoveWrapper.appendChild(removeButton);
+  ingredientDiv.appendChild(inputRemoveWrapper);
 
   $("#ingredient-search-bar")[0].value = "";
   var searchResultsDiv = $("#search-results-wrapper")[0];
