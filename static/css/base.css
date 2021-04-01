@@ -8,3 +8,16 @@ body {
     height: 100%;
     margin: 1vw;
 }
+
+.flashed-messages {
+    background-color: #ccf5ff;
+    border-width: 2px;
+    border-color: #33d6ff;
+    border-style: solid;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+.flashed-messages p {
+    margin: 0;
+}
