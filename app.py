@@ -89,23 +89,25 @@ def find_recipe():
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
 
-@app.route("/showpantry", methods=['POST'])
+@app.route("/showpantry", methods=['GET', 'POST'])
 def showpantry():
+    uid = session['id']
     noResults = None
     error = None
-    # results from searching the db
-    uid = session['id']
-    ingredient = request.form['pantry_order']
-    amount = request.form['amount']
-    purchased = request.form['buy_date']
-    expires = request.form['exp_date']
+    if request.method == 'POST':
+        # results from searching the db
+        ingredient = request.form['pantry_order']
+        amount = request.form['amount']
+        purchased = request.form['buy_date']
+        expires = request.form['exp_date']
 
-    update_pantry(ingredient, amount, purchased, expires, uid) # update with form info
+        update_pantry(ingredient, amount, purchased, expires, uid) # update with form info
+
     results = show_pantry(uid)
     # checks to see if there was at least one result
     if len(results) == 0:
         noResults = 'No Pantry Data!'
-    return render_template("home.html", results=results, noResults=noResults, uid=uid)
+    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid, error=error)
 
 
 @app.route("/make_category", methods=['GET', 'POST'])

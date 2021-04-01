@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Pantry{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="pantry">
+  <h1>Manage Your Pantry</h1>
+  {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+
+  <a href="/home">Return to the Home Page</a>
+
+  {% if noResults %}
+    <h4>
+      {{ noResults }}
+    </h4>
+  {% elif results %}
+    <h2>Pantry for user {{uid}}</h2>
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>Ingredient</th>
+          <th>Amount</th>
+          <th>Exp. Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in results %}
+          <tr>
+            <td>{{ order[0] }}</td>
+            <td>{{ order[1] }}</td>
+            <td>{{ order[2] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br />
+  {% endif %}
+
+  <form method="post" action="/showpantry">
+    <h5>
+      Make an addition to your pantry:
+    </h5>
+    <div class="block">
+      <label>Ingredient Name</label>
+      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt">
+    </div>
+    <div class="block">
+      <label>Amount</label>
+      <input type="number" name="amount" value="">
+    </div>
+    <div class="block">
+      <label>Purchase Date</label>
+      <input type="date" name="buy_date" value="2021-05-31">
+    </div>
+    <div class="block">
+      <label>Expiration Date</label>
+      <input type="date" name="exp_date" value="2021-05-31">
+    </div>
+    <br />
+    <input type="submit" name="commit" value="Search">
+  </form>
+
+</div>
+
+{% endblock %}
