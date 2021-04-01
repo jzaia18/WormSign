@@ -2,9 +2,9 @@ import psycopg2 as psycopg2
 
 from utils.config import config
 
+
 def search_recipe(searchType, keyword):
     """ finds recipe based on search """
-    global results
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
                         WHERE "RecipeName" LIKE '%{}%';""".format(keyword)
@@ -62,7 +62,6 @@ def get_recipe(recipeid):
 
 
 def get_creator(userid):
-    global results
     # get user entity based on id
     retrieve = """SELECT "Username" FROM "Users" WHERE "UserId" = '{}';""".format(userid)
     conn = None
@@ -88,8 +87,7 @@ def get_creator(userid):
 
 
 def get_ingredients(recipeid):
-    global results
-    # get recipe entity based on id
+    # gets ingredients based on recipeid
     retrieve = """SELECT X."IngredientName" FROM "Ingredients" X, "IngredientsForRecipe" Y
         WHERE X."IngredientId" = Y."IngredientId" AND Y."RecipeId" = '{}';""".format(recipeid)
     conn = None
