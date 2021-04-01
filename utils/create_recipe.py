@@ -1,21 +1,18 @@
 import psycopg2 as psycopg2
+import datetime
 
 from utils.config import config
 
 
-def create_recipe(searchType, keyword):
-    """ finds recipe based on search """
-    global results
-    if searchType == 'name':
-        checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes"
-                        WHERE "RecipeName" LIKE '%{}%';""".format(keyword)
-    elif searchType == 'ingredient':
-        checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
-                        WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
-                        Z."IngredientName" LIKE '%{}%';""".format(keyword)
-    # elif searchType == 'category':
-
+def create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, user_id):
+    """ creates a new recipe """
+    results = None
     conn = None
+    checkdb = """INSERT INTO Recipes (RecipeName, Description, Servings, CookTime, Difficulty, Steps, UserId, CreationDate)
+                   VALUES ({}, {}, {}, {}, {}, {}, {}, {})""".format(recipe_name, description, servings, cook_time, difficulty, steps, user_id, datetime.datetime.utcnow())
+
+    print(checkdb)
+    return
     try:
         # read database configuration
         params = config()

@@ -7,7 +7,7 @@ function displayNum(e) {
 
 function createIngredientsSubmission() {
   var ingredientsList = $("#selected-ingredients")[0];
-  var ingredients = "";
+  var ingredients = "[";
 
   Array.from(ingredientsList.children).forEach(
     ingredientDiv => {
@@ -15,7 +15,7 @@ function createIngredientsSubmission() {
     }
   );
 
-  $("#secret-ingredients-holder")[0].value = ingredients.substring(0, ingredients.length-2);
+  $("#secret-ingredients-holder")[0].value = ingredients.substring(0, ingredients.length-2) + "]";
 }
 
 function removeSelectedIngredient(e) {

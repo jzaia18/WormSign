@@ -7,6 +7,7 @@ from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
 from utils.search_ingredient import search_ingredient
+from utils.create_recipe import create_recipe
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -16,7 +17,6 @@ app.secret_key = os.urandom(16)
 def require_login(f):
     @wraps(f)
     def inner(*args, **kwargs):
-        print('test')
         if 'user' not in session or not session.get('user'):
             return redirect(url_for('login'))
         else:
@@ -57,9 +57,17 @@ def login():
 
 @app.route("/createrecipe", methods=['GET', 'POST'])
 @require_login
-def create_recipe():
+def create_recipe_route():
     if request.method == 'POST':
-        print(request.form)
+        recipe_name = request.form['RecipeName']
+        description = request.form['Description']
+        cook_time = int(request.form['CookTime'])
+        servings = int(request.form['Servings'])
+        difficulty = int(request.form['Difficulty'])
+        ingredient_list = json.loads(request.form['Ingredients'])
+        steps = request.form['Steps']
+        create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, 1)
+        return redirect(url_for('home'))
     return render_template("create_recipe.html", user=session.get('user'))
 
 
