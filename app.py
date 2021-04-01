@@ -69,10 +69,9 @@ def create_recipe_route():
         servings = int(request.form['Servings'])
         difficulty = DIFFICULTIES[int(request.form['Difficulty'])]
         ingredient_list = json.loads(request.form['Ingredients'])
-        print(ingredient_list)
         steps = request.form['Steps']
         results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
-        print(results)
+        #print(results)
         return redirect(url_for('home'))
     return render_template("create_recipe.html", user=session.get('user'))
 
