@@ -6,6 +6,7 @@ import os, json
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
+from utils.search_ingredient import search_ingredient
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -60,6 +61,14 @@ def create_recipe():
     if request.method == 'POST':
         print(request.form)
     return render_template("create_recipe.html", user=session.get('user'))
+
+
+@app.route("/ingredientsearch", methods=['POST'])
+def ingredient_search():
+    if 'ingredient_name' not in request.form:
+        return json.dumps({})
+
+    return json.dumps(search_ingredient(request.form['ingredient_name']))
 
 
 @app.route("/create_account", methods=['GET', 'POST'])

@@ -20,6 +20,16 @@
     width: 0;
 }
 
+#search-results-wrapper {
+    background-color: rgba(255, 255, 255, .7);
+    overflow-y: scroll;
+    max-height: 15vh;
+}
+
+.search-result:hover{
+    background-color: rgba(100,100,100,.2);
+}
+
 textarea {
     width: 100%;
 }
