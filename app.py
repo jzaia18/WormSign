@@ -9,6 +9,7 @@ from utils.search_recipe import search_recipe
 from utils.search_ingredient import search_ingredient
 from utils.create_recipe import create_recipe
 from utils.create_category import create_category
+from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -117,8 +118,46 @@ def find_recipe():
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
 
-@app.route("/make_category", methods=['GET','POST'])
-@require_login
+@app.route("/showpantry", methods=['GET', 'POST'])
+def showpantry():       # handles when a user adds to their pantry
+    uid = session['id']
+    noResults = None
+    error = None
+    if request.method == 'POST':
+        # results from searching the db
+        ingredient = request.form['pantry_order']
+        amount = request.form['amount']
+        purchased = request.form['buy_date']
+        expires = request.form['exp_date']
+
+        error = add_to_pantry(ingredient, amount, purchased, expires, uid)  # update with form info
+
+    results = show_pantry(uid)  # always want to load pantry table
+    # checks to see if there was at least one result
+    if len(results) == 0:
+        noResults = 'No Pantry Data!'
+    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid, error=error)
+
+
+@app.route("/updatepantry", methods=['POST'])  # for when a user updates an order within their pantry
+def updatepantry():
+    uid = session['id']
+    noResults = None
+    error = None
+    if request.method == 'POST':
+        # results from searching the db
+        order_id = request.form['update_order']
+        amount = request.form['new_amount']
+
+        error = update_pantry(order_id, amount, uid)  # update with form info
+    results = show_pantry(uid)  # always want to load pantry table
+    # checks to see if there was at least one result
+    if len(results) == 0:
+        noResults = 'No Pantry Data!'
+    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid, error=error)
+
+
+@app.route("/make_category", methods=['GET', 'POST'])
 def make_category():
     error = None
     if request.method == 'POST':
@@ -131,7 +170,6 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html", error=error)
-
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
