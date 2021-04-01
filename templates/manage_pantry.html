@@ -15,33 +15,6 @@
 
   <a href="/home">Return to the Home Page</a>
 
-  {% if noResults %}
-    <h4>
-      {{ noResults }}
-    </h4>
-  {% elif results %}
-    <h2>Pantry for user {{uid}}</h2>
-    <table style="width:100%">
-      <thead>
-        <tr>
-          <th>Ingredient</th>
-          <th>Amount</th>
-          <th>Exp. Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for order in results %}
-          <tr>
-            <td>{{ order[0] }}</td>
-            <td>{{ order[1] }}</td>
-            <td>{{ order[2] }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <br />
-  {% endif %}
-
   <form method="post" action="/showpantry">
     <h5>
       Make an addition to your pantry:
@@ -62,9 +35,40 @@
       <label>Expiration Date</label>
       <input type="date" name="exp_date" value="2021-05-31">
     </div>
-    <br />
-    <input type="submit" name="commit" value="Search">
+    <input type="submit" name="commit" value="Save Item">
   </form>
+  <br />
+
+  <!-- Check for errors with the entry -->
+  {% if error %}
+
+  {% endif %}
+
+  {% if noResults %}
+    <h4>
+      {{ noResults }}
+    </h4>
+  {% elif results %}
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th>Ingredient</th>
+          <th>Amount</th>
+          <th>Exp. Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in results %}
+          <tr>
+            <td>{{ order[0] }}</td>
+            <td>{{ order[1] }}</td>
+            <td>{{ order[2] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br />
+  {% endif %}
 
 </div>
 

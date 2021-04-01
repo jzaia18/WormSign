@@ -101,7 +101,7 @@ def showpantry():
         purchased = request.form['buy_date']
         expires = request.form['exp_date']
 
-        update_pantry(ingredient, amount, purchased, expires, uid) # update with form info
+        error = update_pantry(ingredient, amount, purchased, expires, uid)  # update with form info
 
     results = show_pantry(uid)
     # checks to see if there was at least one result

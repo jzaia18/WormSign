@@ -38,6 +38,7 @@ def update_pantry(ingredient, amount, purchased, exp, uid):
     checkdb = """SELECT "IngredientId" FROM "Ingredients"
                         WHERE "IngredientName" = '{}';""".format(ingredient)
     conn = None
+    error = None
     try:
         # read database configuration
         params = config()
@@ -49,23 +50,27 @@ def update_pantry(ingredient, amount, purchased, exp, uid):
         # grab ingredient id from db
         cur.execute(checkdb)
         # store ingredient id
-        ingred_id = cur.fetchone()[0]  # should probably check if this is valid
-        order_id = int(datetime.datetime.utcnow().timestamp())
+        if bool(cur.rowcount):  # if item existed in db
+            ingred_id = cur.fetchone()[0]  # should probably check if this is valid
+            order_id = int(datetime.datetime.utcnow().timestamp())
 
-        # "store this order" message for pantry
-        checkdb = """INSERT INTO "Pantry"("OrderId", "PurchaseDate", "ExpirationDate", "PurchaseQuantity", "CurrentQuantity") VALUES(%s, %s, %s, %s,%s)"""
-        cur.execute(checkdb, (order_id, purchased, exp, amount, amount))
+            # "store this order" message for pantry
+            checkdb = """INSERT INTO "Pantry"("OrderId", "PurchaseDate", "ExpirationDate", "PurchaseQuantity", "CurrentQuantity") VALUES(%s, %s, %s, %s,%s)"""
+            cur.execute(checkdb, (order_id, purchased, exp, amount, amount))
 
-        # connect new order to user
-        checkdb = """INSERT INTO "UserOrders"("UserId", "OrderId") VALUES(%s, %s)"""
-        cur.execute(checkdb, (uid, order_id))
+            # connect new order to user
+            checkdb = """INSERT INTO "UserOrders"("UserId", "OrderId") VALUES(%s, %s)"""
+            cur.execute(checkdb, (uid, order_id))
 
-        # connect order to ingredient
-        checkdb = """INSERT INTO "OrderIngredients"("OrderId", "IngredientId") VALUES(%s, %s)"""
-        cur.execute(checkdb, (order_id, ingred_id))
+            # connect order to ingredient
+            checkdb = """INSERT INTO "OrderIngredients"("OrderId", "IngredientId") VALUES(%s, %s)"""
+            cur.execute(checkdb, (order_id, ingred_id))
 
-        # commit the changes!
-        conn.commit()
+            # commit the changes!
+            conn.commit()
+        else:
+            error = "That item does not exist in the ingredient table!"
+            return error
         # close the cursor
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -73,4 +78,4 @@ def update_pantry(ingredient, amount, purchased, exp, uid):
     finally:
         if conn is not None:
             conn.close()
-    return None
+    return error
