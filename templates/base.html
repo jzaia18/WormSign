@@ -36,12 +36,10 @@
   <body>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <div class="error">
-      <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
+    <div class="flashed-messages">
+      {% for message in messages %}
+      <p>{{ message }}</p>
+      {% endfor %}
     </div>
     {% endif %}
     {% endwith %}
