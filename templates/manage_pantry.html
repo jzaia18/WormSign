@@ -10,13 +10,15 @@
 <div class="pantry">
   <h1>Manage Your Pantry</h1>
   {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}
+    <p class=error><strong>Error:</strong> {{ error }}</p>
+    <br />
   {% endif %}
 
   <a href="/home">Return to the Home Page</a>
 
   <form method="post" action="/showpantry">
     <h5>
+      <br>
       Make an addition to your pantry:
     </h5>
     <div class="block">
@@ -25,7 +27,7 @@
     </div>
     <div class="block">
       <label>Amount</label>
-      <input type="number" name="amount" value="">
+      <input type="number" name="amount" value="" min="1" max="20000">
     </div>
     <div class="block">
       <label>Purchase Date</label>
@@ -55,6 +57,7 @@
           <th>Ingredient</th>
           <th>Amount</th>
           <th>Exp. Date</th>
+          <th>Order ID</th>
         </tr>
       </thead>
       <tbody>
@@ -63,12 +66,29 @@
             <td>{{ order[0] }}</td>
             <td>{{ order[1] }}</td>
             <td>{{ order[2] }}</td>
+            <td>{{ order[3] }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
     <br />
   {% endif %}
+
+  <form method="post" action="/updatepantry">
+    <h5>
+      Update an Item in Your Pantry:
+    </h5>
+    <div class="block">
+      <label>Order ID</label>
+      <input type="number" name="update_order" value="123456">
+    </div>
+    <div class="block">
+      <label>New Amount (0 deletes)</label>
+      <input type="number" name="new_amount" value="0" min="0" max="20000">
+    </div>
+    <input type="submit" name="commit" value="Update Item">
+  </form>
+  <br />
 
 </div>
 
