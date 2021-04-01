@@ -65,7 +65,7 @@ def create_recipe():
 
 @app.route("/ingredientsearch", methods=['POST'])
 def ingredient_search():
-    if 'ingredient_name' not in request.form:
+    if 'ingredient_name' not in request.form or not request.form['ingredient_name']:
         return json.dumps({})
 
     return json.dumps(search_ingredient(request.form['ingredient_name']))

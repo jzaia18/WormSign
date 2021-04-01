@@ -26,6 +26,10 @@
     max-height: 15vh;
 }
 
+#secret-ingredients-holder {
+    display: none;
+}
+
 .search-result:hover{
     background-color: rgba(100,100,100,.2);
 }

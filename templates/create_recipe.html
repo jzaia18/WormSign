@@ -23,7 +23,7 @@
 
         <div class="recipe-input recipe-text-input">
           <label for="Description-input">Description:</label>
-          <textarea id="Description-input" name="Description"> Explain what makes this recipe so special. Really grab users' attention! </textarea>
+          <textarea id="Description-input" name="Description"> Explain what makes this recipe so special. Really grab peoples' attention! </textarea>
         </div>
 
         <div class="recipe-input recipe-number-input">
@@ -48,9 +48,12 @@
         <br />
 
         <div class="recipe-input recipe-text-input">
-          <label for="Ingredients-input">Ingredients</label>
-          <input type="text" id="ingredient-search-bar" name="Ingredients" />
+          <label for="ingredient-search-bar">Ingredients</label>
+          <input type="text" id="ingredient-search-bar" />
+          <input type="text" id="secret-ingredients-holder" name="Ingredients" />
           <div id="search-results-wrapper">
+          </div>
+          <div id="selected-ingredients">
           </div>
         </div>
 
