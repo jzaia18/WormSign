@@ -22,11 +22,13 @@
   <div id="my-recipes-wrapper">
     <table id="my-recipes">
       <tr>
-        <th><h4>My Recipes</h4></th>
+        <th colspan="3"><h4>My Recipes</h4></th>
       </tr>
       {% for recipe in recipes %}
       <tr>
-        <td id="{{recipe[0]}}"><a href="/recipe?id={{recipe[0]}}">{{recipe[1]}}</a></td>
+        <td class="recipe-name-cell" id="{{recipe[0]}}"><a href="/recipe?id={{recipe[0]}}">{{recipe[1]}}</a></td>
+        <td class="recipe-edit-cell"><a href="/editrecipe?id={{recipe[0]}}">Edit</a></td>
+        <td class="recipe-delete-cell"><button type="button" class="recipe-delete-button">X</button></td>
       </tr>
       {% endfor %}
     </table>

@@ -28,6 +28,14 @@
     <input type="radio" name="searchType" id="category" value="category"/>
     <label for="category">Category</label>
     <br />
+    Sort by:
+    <input type="radio" name="sortType" id="alpha" value="alpha" checked/>
+    <label for="alpha">Name</label>
+    <input type="radio" name="sortType" id="rating" value="rating"/>
+    <label for="rating">Rating</label>
+    <input type="radio" name="sortType" id="recent" value="recent"/>
+    <label for="recent">Most Recent</label>
+    <br />
     <input type="text" style="width:400px;" name="keyword" value="" placeholder="Enter a name, ingredient, or category"></p>
     <input type="submit" name="commit" value="Search">
   </form>
@@ -44,7 +52,7 @@
       <br />
       {% for recipe in results %}
         <tr>
-          {{ recipe[1] }}
+          <a href="/recipe?id={{ recipe[0] }}">{{ recipe[1] }}</a>  {{ recipe[2] }}
           <br />
         </tr>
       {% endfor %}

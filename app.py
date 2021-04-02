@@ -5,17 +5,18 @@ import os, json
 
 from utils.config import config
 from utils.login import insert_user, login_user
-from utils.search_recipe import search_recipe
 from utils.search_ingredient import search_ingredient
-from utils.create_recipe import create_recipe, get_my_recipes
+from utils.create_recipe import *
+from utils.search_recipe import *
 from utils.create_category import create_category
 from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
+from utils.clean_strings import clean_string
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
 app.secret_key = os.urandom(16)
 
-DIFFICULTIES = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Very-Hard']
+DIFFICULTIES = [None, 'Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Very-Hard']
 
 def require_login(f):
     @wraps(f)
@@ -101,10 +102,13 @@ def create_recipe_route():
         difficulty = DIFFICULTIES[int(request.form['Difficulty'])]
         ingredient_list = json.loads(request.form['Ingredients'])
         steps = request.form['Steps']
-        results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
-        #print(results)
+        if 'RecipeId' in request.form:
+            recipe_id = request.form['RecipeId']
+            results = update_recipe(recipe_id, recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps)
+        else:
+            results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
         return redirect(url_for('home'))
-    return render_template("create_recipe.html", user=session.get('user'))
+    return render_template("create_recipe.html")
 
 
 @app.route("/ingredientsearch", methods=['POST'])
@@ -121,9 +125,15 @@ def find_recipe():
     if request.method == 'POST':
         # what the user entered
         searchType = request.form['searchType']
+        sortType = request.form['sortType']
         keyword = request.form['keyword']
         # results from searching the db
-        results = search_recipe(searchType, keyword)
+        if sortType == 'alpha':
+            results = search_recipe(searchType, keyword)
+        elif sortType == 'rating':
+            results = search_recipe_rating(searchType, keyword)
+        else:
+            results = search_recipe_recent(searchType, keyword)
         # checks to see if there was at least one result
         if len(results) == 0:
             notfound = 'No recipes found'
@@ -170,6 +180,33 @@ def updatepantry():
     return redirect(url_for('showpantry'))
 
 
+@app.route("/recipe")
+@require_login
+def display_recipe():
+    recipeid = request.args.get('id')
+    recipe = get_recipe(recipeid)
+    creator = get_creator(recipe[7])
+    ingredients = get_ingredients(recipeid)
+    steps = format_steps(recipe[6])
+    return render_template("recipe.html", recipe=recipe, creator=creator, ingredients=ingredients, steps=steps)
+
+
+@app.route("/editrecipe")
+@require_login
+def edit_recipe():
+    recipe_id = request.args.get('id')
+    recipe = get_recipe(recipe_id)
+
+    recipe_name = recipe[1]
+    description = recipe[2]
+    servings = recipe[3]
+    cook_time = recipe[4]
+    difficulty = {'Easy': 1, 'Easy-Medium': 2, 'Medium': 3, 'Medium-Hard': 4, 'Hard': 5}[recipe[5]]
+    ingredients = get_ingredients_with_ids(recipe_id)
+    steps = clean_string(recipe[6])
+    return render_template("create_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, description=description, servings=servings, cook_time=cook_time, difficulty=difficulty, ingredients=ingredients, steps=steps)
+
+
 @app.route("/make_category", methods=['GET', 'POST'])
 @require_login
 def make_category():
@@ -183,6 +220,7 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html")
+
 
 
 if __name__ == '__main__':
