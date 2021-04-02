@@ -3,16 +3,21 @@ import psycopg2 as psycopg2
 from utils.config import config
 
 
-def search_recipe(searchType, keyword):
+def search_recipe(searchType, keyword, userid):
     """ finds recipe based on search """
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
                         WHERE "RecipeName" LIKE '%{}%' ORDER BY "RecipeName" ASC;""".format(keyword)
     elif searchType == 'ingredient':
-        checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
+        checkdb = """SELECT DISTINCT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
                         WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                         Z."IngredientName" LIKE '%{}%' ORDER BY X."RecipeName" ASC;""".format(keyword)
-    # elif searchType == 'category':
+    else:
+        checkdb = """SELECT X."RecipeId", X."RecipeName" 
+                        FROM "Recipes" X, "RecipeCategories" Y, "UserCategories" Z, "Categories" A
+                        WHERE X."RecipeId" = Y."RecipeId" AND Y."CategoryId" = Z."CategoryId" AND
+                        Z."UserId" = '{}' AND Y."CategoryId" = A."CategoryId" AND A."CategoryName" = '{}' 
+                        ORDER BY X."RecipeName" ASC;""".format(userid, keyword)
     conn = None
     try:
         # read database configuration
@@ -35,25 +40,33 @@ def search_recipe(searchType, keyword):
     return results
 
 
-def search_recipe_rating(searchType, keyword):
+def search_recipe_rating(searchType, keyword, userid):
     """ finds recipe based on search """
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName", "avg" FROM 
-                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", AVG("CookedRecipes"."Rating") AS "avg"
+                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", ROUND(AVG("CookedRecipes"."Rating") ,2) AS "avg"
                         FROM "Recipes" INNER JOIN "CookedRecipes" 
                         ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId"
                         GROUP BY "Recipes"."RecipeId") AS "Ratings"
                         WHERE "RecipeName" LIKE '%{}%' ORDER BY "avg" DESC;""".format(keyword)
 
     elif searchType == 'ingredient':
-        checkdb = """SELECT "Ratings"."RecipeId", "Ratings"."RecipeName", "avg" FROM 
-                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", AVG("CookedRecipes"."Rating") AS "avg"
+        checkdb = """SELECT DISTINCT "Ratings"."RecipeId", "Ratings"."RecipeName", "avg" FROM 
+                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", ROUND(AVG("CookedRecipes"."Rating") ,2) AS "avg"
                         FROM "Recipes" INNER JOIN "CookedRecipes" 
                         ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId"
                         GROUP BY "Recipes"."RecipeId") AS "Ratings", "IngredientsForRecipe" Y, "Ingredients" Z
                         WHERE "Ratings"."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                         Z."IngredientName" LIKE '%{}%' ORDER BY "avg" DESC;""".format(keyword)
-    # elif searchType == 'category':
+    else:
+        checkdb = """SELECT "Ratings"."RecipeId", "Ratings"."RecipeName", "avg" FROM 
+                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", ROUND(AVG("CookedRecipes"."Rating") ,2) AS "avg"
+                        FROM "Recipes" INNER JOIN "CookedRecipes" 
+                        ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId"
+                        GROUP BY "Recipes"."RecipeId") AS "Ratings", "RecipeCategories" Y, "UserCategories" Z, "Categories" A
+                        WHERE "Ratings"."RecipeId" = Y."RecipeId" AND Y."CategoryId" = Z."CategoryId" AND
+                        Z."UserId" = '{}' AND Y."CategoryId" = A."CategoryId" AND A."CategoryName" = '{}' 
+                        ORDER BY "avg" DESC;""".format(userid, keyword)
     conn = None
     try:
         # read database configuration
@@ -76,16 +89,22 @@ def search_recipe_rating(searchType, keyword):
     return results
 
 
-def search_recipe_recent(searchType, keyword):
+def search_recipe_recent(searchType, keyword, userid):
     """ finds recipe based on search """
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName", "CreationDate" FROM "Recipes" 
                         WHERE "RecipeName" LIKE '%{}%' ORDER BY "CreationDate" DESC;""".format(keyword)
     elif searchType == 'ingredient':
-        checkdb = """SELECT X."RecipeId", X."RecipeName", "CreationDate" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
+        checkdb = """SELECT DISTINCT X."RecipeId", X."RecipeName", "CreationDate" 
+                        FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
                         WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                         Z."IngredientName" LIKE '%{}%' ORDER BY X."CreationDate" DESC;""".format(keyword)
-    # elif searchType == 'category':
+    else:
+        checkdb = """SELECT X."RecipeId", X."RecipeName", "CreationDate" 
+                        FROM "Recipes" X, "RecipeCategories" Y, "UserCategories" Z, "Categories" A
+                        WHERE X."RecipeId" = Y."RecipeId" AND Y."CategoryId" = Z."CategoryId" AND
+                        Z."UserId" = '{}' AND Y."CategoryId" = A."CategoryId" AND A."CategoryName" = '{}' 
+                        ORDER BY X."CreationDate" DESC;""".format(userid, keyword)
     conn = None
     try:
         # read database configuration
@@ -188,6 +207,7 @@ def get_ingredients_with_ids(recipeid):
     # gets ingredients based on recipeid
     retrieve = """SELECT X."IngredientId", X."IngredientName", Y."Amount" FROM "Ingredients" X, "IngredientsForRecipe" Y
         WHERE X."IngredientId" = Y."IngredientId" AND Y."RecipeId" = '{}';""".format(recipeid)
+
     conn = None
     try:
         # read database configuration
@@ -197,6 +217,7 @@ def get_ingredients_with_ids(recipeid):
         # create a new cursor
         cur = conn.cursor()
         # check if user exists
+
         cur.execute(retrieve)
         # store all results
         ingredients = cur.fetchall()
@@ -209,8 +230,33 @@ def get_ingredients_with_ids(recipeid):
             conn.close()
     return ingredients
 
+
+def get_rating(recipeid):
+    # gets rating based on recipeid
+    avgrating = """SELECT ROUND(AVG("Rating") ,2) FROM "CookedRecipes" WHERE "RecipeId" = '{}';""".format(recipeid)
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+
+        cur.execute(avgrating)
+        # store all results
+        rating = cur.fetchone()
+        # close the cursor
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return rating
+
 def format_steps(steps):
-    print(steps)
     steps = steps.replace("[\'", '')
     steps = steps.replace("\']", '')
     steps = steps.split("\', \'")
