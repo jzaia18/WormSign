@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<body>
+    <h2>
+        Select the categories you want to add the recipe to
+    </h2>
+    <form method="post" action="/processcategory?id={{ recipeid }}">
+        {% for category in categories %}
+        <input type="checkbox" id="{{ category[0] }}" name="{{ category[1] }}" value="{{ category[0] }}">
+        <label for="{{ category[0] }}">{{ category[1] }}</label><br>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+</body>
+{% endblock %}

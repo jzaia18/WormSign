@@ -7,12 +7,12 @@
 {% endblock %}
 
 {% block body %}
+<body>
     <p>
         <h1>
             {{ recipe[1] }}
         </h1>
         Written on {{ recipe[8] }} by {{ creator[0] }}
-
 
     <p>
         <h6>
@@ -26,9 +26,12 @@
             <br />
             Difficulty: {{ recipe[5] }}
             <br />
+            Rating: {{ rating[0] }}
         </h4>
     </p>
-    <br />
+    <a href="/addcategory?id={{ recipe[0] }}">Add Recipe to a Category</a>
+    <br/>
+    <br/>
     <h2>
         Ingredients
     </h2>
@@ -46,5 +49,5 @@
         <li>{{ step }}</li></p>
         {% endfor %}
     </ol>
-
+</body>
 {% endblock %}

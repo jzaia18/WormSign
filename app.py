@@ -3,6 +3,7 @@ from functools import wraps
 from utils import example_util
 import os, json
 
+from utils.add_category import *
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import *
@@ -97,10 +98,12 @@ def find_recipe():
 def display_recipe():
     recipeid = request.args.get('id')
     recipe = get_recipe(recipeid)
+    rating = get_rating(recipe[0])
     creator = get_creator(recipe[7])
     ingredients = get_ingredients(recipeid)
     steps = format_steps(recipe[6])
-    return render_template("recipe.html", recipe=recipe, creator=creator, ingredients=ingredients, steps=steps)
+    return render_template("recipe.html", recipe=recipe, creator=creator,
+                           ingredients=ingredients, steps=steps, rating=rating)
 
 
 @app.route("/make_category", methods=['GET','POST'])
@@ -116,6 +119,29 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html", error=error)
+
+
+@app.route("/addcategory")
+def add_category():
+    recipeid = request.args.get('id')
+    categories = get_categories(session['id'])
+    return render_template("add_category.html", recipeid=recipeid, categories=categories)
+
+
+@app.route("/processcategory", methods=['GET', 'POST'])
+def process_category():
+    recipeid = request.args.get('id')
+    recipe = get_recipe(recipeid)
+    rating = get_rating(recipe[0])
+    creator = get_creator(recipe[7])
+    ingredients = get_ingredients(recipeid)
+    steps = format_steps(recipe[6])
+    categories = get_categories(session['id'])
+    for category in categories:
+        if category[0] == request.form[category[1]]:
+            add_category(recipeid, category[0])
+    return render_template("recipe.html", recipe=recipe, creator=creator,
+                           ingredients=ingredients, steps=steps, rating=rating)
 
 
 if __name__ == '__main__':
