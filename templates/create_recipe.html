@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Create Recipe{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/create_recipe.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="create_recipe">
+  <h1>Create a new Recipe!</h1>
+
+  <hr />
+
+  <div id="createrecipe-wrapper">
+    <form method="post" action="/createrecipe">
+      <div id="recipe-input-wrapper">
+
+        <div class="recipe-input recipe-text-input">
+          <label for="RecipeName-input">Recipe Name:</label>
+          <input type="text" id="RecipeName-input" name="RecipeName" value="{{user}}'s Awesome Recipe" />
+        </div>
+
+        <div class="recipe-input recipe-text-input">
+          <label for="Description-input">Description:</label>
+          <textarea id="Description-input" name="Description">Explain what makes this recipe so special. Really grab peoples' attention!</textarea>
+        </div>
+
+        <div class="recipe-input recipe-number-input">
+          <label for="CookTime-input">Cook Time:</label>
+          <input type="number" min="1" max="1440" value="20" id="CookTime-input" name="CookTime" /><span class="input-unit">mins</span>
+        </div>
+
+        <div class="recipe-input recipe-range-input">
+          <label for="Servings-input">Servings:</label>
+          <label class="range-displaynum" id="Servings-displaynum">4</label>
+          <input type="range" min="1" max="20" value="4" id="Servings-input" name="Servings" />
+        </div>
+
+        <div class="recipe-input recipe-range-input">
+          <label for="Difficulty-input">Difficulty:</label>
+          <label class="range-displaynum" id="Difficulty-displaynum">1</label>
+          <input type="range" min="1" max="5" value="1" id="Difficulty-input" name="Difficulty" />
+        </div>
+
+        <br />
+
+        <div class="recipe-input recipe-text-input">
+          <label for="ingredient-search-bar">Select Ingredients:</label>
+          <input type="text" id="ingredient-search-bar" />
+          <input type="text" id="secret-ingredients-holder" value="[]" name="Ingredients" />
+          <div id="search-results-wrapper">
+          </div>
+
+          <br />
+
+          <div id="selected-ingredients-wrapper">
+            <label>My ingredients:</label>
+            <div id="selected-ingredients">
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-input recipe-text-input">
+          <label for="Steps-input">Steps</label>
+          <textarea id="Steps-input" name="Steps"></textarea>
+        </div>
+
+        <div class="recipe-input">
+          <input id="submit-button" name="submit" type="submit" />
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/create_recipe.js') }}"> </script>
+{% endblock %}

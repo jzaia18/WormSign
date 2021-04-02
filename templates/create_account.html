@@ -9,9 +9,7 @@
 {% block body %}
 <div class="create_account">
   <h1>Create new Recipe Manager account</h1>
-      {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}
-  {% endif %}
+  <hr />
   <form method="post" action="">
     <p><input type="text" name="username" value="" placeholder="Username"></p>
     <p><input type="password" name="password" value="" placeholder="Password"></p>
