@@ -43,21 +43,20 @@ def home():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         login_result, user_id = login_user(username, password)
         if login_result == 'no-account':
-            error = 'Account with that Username does not exist'
+            flash('Account with that Username does not exist')
         elif login_result == 'failed':
-            error = 'Incorrect Password'
+            flash('Incorrect Password')
         else:
             flash('Successfully logged in')
             session['user'] = username
             session['id'] = user_id
             return redirect(url_for('home'))
-    return render_template("login.html", error=error)
+    return render_template("login.html")
 
 @app.route("/signout")
 @require_login
@@ -93,26 +92,24 @@ def ingredient_search():
 
 @app.route("/create_account", methods=['GET', 'POST'])
 def create_account():
-    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         insert_result, user_id = insert_user(username, password)
         if insert_result == 'failed':
-            error = 'This Username already exists, please try another'
+            flash('This Username already exists, please try another')
         else:
             flash('Account successfully created!')
             session['user'] = username
             session['id'] = user_id
             return redirect(url_for('home'))
-    return render_template("create_account.html", error=error)
+    return render_template("create_account.html")
 
 
 @app.route("/findrecipes", methods=['POST'])
 @require_login
 def find_recipe():
     notfound = None
-    error = None
     if request.method == 'POST':
         # what the user entered
         searchType = request.form['searchType']
@@ -130,7 +127,6 @@ def find_recipe():
 def showpantry():       # handles when a user adds to their pantry
     uid = session['id']
     noResults = None
-    error = None
     if request.method == 'POST':
         # results from searching the db
         ingredient = request.form['pantry_order']
@@ -140,11 +136,14 @@ def showpantry():       # handles when a user adds to their pantry
 
         error = add_to_pantry(ingredient, amount, purchased, expires, uid)  # update with form info
 
+        if error:
+            flash(error)
+
     results = show_pantry(uid)  # always want to load pantry table
     # checks to see if there was at least one result
     if len(results) == 0:
         noResults = 'No Pantry Data!'
-    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid, error=error)
+    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid)
 
 
 @app.route("/updatepantry", methods=['POST'])  # for when a user updates an order within their pantry
@@ -152,34 +151,30 @@ def showpantry():       # handles when a user adds to their pantry
 def updatepantry():
     uid = session['id']
     noResults = None
-    error = None
     if request.method == 'POST':
         # results from searching the db
         order_id = request.form['update_order']
         amount = request.form['new_amount']
 
         error = update_pantry(order_id, amount, uid)  # update with form info
-    results = show_pantry(uid)  # always want to load pantry table
-    # checks to see if there was at least one result
-    if len(results) == 0:
-        noResults = 'No Pantry Data!'
-    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid, error=error)
+        if error:
+            flash(error)
+    return redirect(url_for('showpantry'))
 
 
 @app.route("/make_category", methods=['GET', 'POST'])
 @require_login
 def make_category():
-    error = None
     if request.method == 'POST':
         category_name = request.form['category_name']
         create_category_result = create_category(session['id'], category_name)
         if create_category_result == 'failed':
-            error = 'You already have a category with this name, please try another'
+            flash('You already have a category with this name, please try another')
         else:
             flash('Category successfully created!')
             return redirect(url_for('home'))
 
-    return render_template("make_category.html", error=error)
+    return render_template("make_category.html")
 
 
 if __name__ == '__main__':

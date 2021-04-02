@@ -24,3 +24,11 @@ body {
 .flashed-messages p {
     margin: 0;
 }
+
+.flashed-mesages {
+    margin-bottom: 15px;
+}
+
+h1 {
+    text-align: center;
+}

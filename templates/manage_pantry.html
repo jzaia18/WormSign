@@ -9,10 +9,6 @@
 {% block body %}
 <div class="pantry">
   <h1>Manage Your Pantry</h1>
-  {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}</p>
-    <br />
-  {% endif %}
 
   <a href="/home">Return to the Home Page</a>
 
@@ -40,11 +36,6 @@
     <input type="submit" name="commit" value="Save Item">
   </form>
   <br />
-
-  <!-- Check for errors with the entry -->
-  {% if error %}
-
-  {% endif %}
 
   {% if noResults %}
     <h4>
