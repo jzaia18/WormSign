@@ -9,7 +9,7 @@ from utils.login import insert_user, login_user
 from utils.search_ingredient import search_ingredient
 from utils.create_recipe import *
 from utils.search_recipe import *
-from utils.create_category import create_category
+from utils.create_category import create_category, show_categories
 from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
 from utils.clean_strings import clean_string
 
@@ -226,6 +226,8 @@ def delete_recipe():
 @app.route("/make_category", methods=['GET', 'POST'])
 @require_login
 def make_category():
+    uid = session['id']
+    noResults = None
     if request.method == 'POST':
         category_name = request.form['category_name']
         create_category_result = create_category(session['id'], category_name)
@@ -235,7 +237,11 @@ def make_category():
             flash('Category successfully created!')
             return redirect(url_for('home'))
 
-    return render_template("make_category.html")
+    results = show_categories(uid)  # always want to load pantry table
+    # checks to see if there was at least one result
+    if len(results) == 0:
+        noResults = 'No Category Data!'
+    return render_template("make_category.html", results=results, noResults=noResults, uid=uid)
 
 
 

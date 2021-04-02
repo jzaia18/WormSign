@@ -42,3 +42,30 @@ def create_category(user_id, category_name):
         if conn is not None:
             conn.close()
     return 'success'
+
+
+def show_categories(user_id):
+    """ gets a user's pantry data """
+    global results
+    checkdb = """SELECT "Categories"."CategoryName" FROM "Categories" INNER JOIN "UserCategories" On "Categories"."CategoryId" = "UserCategories"."CategoryId"
+        WHERE "UserId" = '{}'""".format(user_id)
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+        cur.execute(checkdb)
+        # store all results
+        results = cur.fetchall()
+        # close the cursor
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return results
