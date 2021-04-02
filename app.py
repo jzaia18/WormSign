@@ -5,6 +5,7 @@ import os, json
 
 from utils.category_help import *
 from utils.config import config
+from utils.cook_recipes import *
 from utils.login import insert_user, login_user
 from utils.search_recipe import *
 from utils.search_ingredient import search_ingredient
@@ -223,6 +224,29 @@ def process_category():
         message = "Recipe has been added to category"
     return render_template("recipe.html", recipe=recipe, creator=creator,
                            ingredients=ingredients, steps=steps, rating=rating, message=message)
+
+
+@app.route("/cookrecipe", methods=['GET', 'POST'])
+def cook_recipe():
+    orders = None
+    recipeid = request.args.get('id')
+    recipe = get_recipe(recipeid)
+    user_id = session['id']
+    ingredients = get_ingredients(recipeid)
+    for ingredient in ingredients:
+        pantry_item = check_for_ingredient(ingredient[0], user_id)
+        if pantry_item is None:
+            flash('Couldn\'t make recipe: missing' + ingredient[1])
+            return redirect(url_for('home'))
+        else:
+            if ingredient[2] <= pantry_item[1]:
+                orders.append((pantry_item[1] - ingredient[2]), pantry_item[0])
+            else:
+                flash('Couldn\'t make recipe: not enough' + ingredient[1])
+                return redirect(url_for('home'))
+    for order in orders:
+
+
 
 
 if __name__ == '__main__':

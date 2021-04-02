@@ -166,7 +166,7 @@ def get_creator(userid):
         # check if user exists
         cur.execute(retrieve)
         # store all results
-        user = cur.fetchone()
+        conn.commit()
         # close the cursor
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -179,7 +179,7 @@ def get_creator(userid):
 
 def get_ingredients(recipeid):
     # gets ingredients based on recipeid
-    retrieve = """SELECT X."IngredientName" FROM "Ingredients" X, "IngredientsForRecipe" Y
+    retrieve = """SELECT X."IngredientId", X."IngredientName" Y."Amount" FROM "Ingredients" X, "IngredientsForRecipe" Y
         WHERE X."IngredientId" = Y."IngredientId" AND Y."RecipeId" = '{}';""".format(recipeid)
     conn = None
     try:
