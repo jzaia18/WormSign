@@ -13,7 +13,6 @@ def search_recipe(searchType, keyword):
                         WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                         Z."IngredientName" LIKE '%{}%' ORDER BY X."RecipeName" ASC;""".format(keyword)
     # elif searchType == 'category':
-
     conn = None
     try:
         # read database configuration
@@ -39,19 +38,16 @@ def search_recipe(searchType, keyword):
 def search_recipe_rating(searchType, keyword):
     """ finds recipe based on search """
     if searchType == 'name':
-        temp = """SELECT X."RecipeId", X."RecipeName", AVG(Y."Rating") AS "R" FROM "Recipes" X, "CookedRecipes" Y
-                    WHERE Y."RecipeId" = (SELECT "RecipeId" FROM "Recipes" 
-                        WHERE "RecipeName" LIKE '%{}%') ORDER BY "R" DESC;"""
-        checkdb = """SELECT X."RecipeId", X."RecipeName", avg(Y."Rating") AS "AvgRating"
-                        FROM "Recipes" X, "CookedRecipes" Y
-                        WHERE X."RecipeName" LIKE '%{}%' AND X."RecipeId" = Y."RecipeId" 
-                        ORDER BY "AvgRating" DESC;""".format(keyword)
+        checkdb = """SELECT "Recipes.RecipeId", "Recipes.RecipeName", AVG("CookedRecipes.Rating") AS "avg"
+                        FROM "Recipes" INNER JOIN "CookedRecipes" 
+                        ON  Recipes."RecipeId" = CookedRecipes."RecipeId";"""
+                        # WHERE X."RecipeId" = Y."RecipeId" AND X."RecipeName" LIKE '%{}%';.format(keyword)
+
     elif searchType == 'ingredient':
         checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
                             WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                             Z."IngredientName" LIKE '%{}%' ORDER BY X."RecipeName" ASC;""".format(keyword)
     # elif searchType == 'category':
-
     conn = None
     try:
         # read database configuration
@@ -61,7 +57,39 @@ def search_recipe_rating(searchType, keyword):
         # create a new cursor
         cur = conn.cursor()
         # check if user exists
-        cur.execute(temp)
+        cur.execute(checkdb)
+        # store all results
+        results = cur.fetchall()
+        # close the cursor
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return results
+
+
+def search_recipe_recent(searchType, keyword):
+    """ finds recipe based on search """
+    if searchType == 'name':
+        checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
+                        WHERE "RecipeName" LIKE '%{}%' ORDER BY "CreationDate" DESC;""".format(keyword)
+    elif searchType == 'ingredient':
+        checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
+                        WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
+                        Z."IngredientName" LIKE '%{}%' ORDER BY X."CreationDate" DESC;""".format(keyword)
+    # elif searchType == 'category':
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+        cur.execute(checkdb)
         # store all results
         results = cur.fetchall()
         # close the cursor

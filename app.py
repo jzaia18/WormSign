@@ -86,7 +86,7 @@ def find_recipe():
         elif sortType == 'rating':
             results = search_recipe_rating(searchType, keyword)
         else:
-            results = search_recipe(searchType, keyword)
+            results = search_recipe_recent(searchType, keyword)
         # checks to see if there was at least one result
         if len(results) == 0:
             notfound = 'No recipes found'
