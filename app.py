@@ -3,8 +3,10 @@ from functools import wraps
 from utils import example_util
 import os, json
 
+from utils.category_help import *
 from utils.config import config
 from utils.login import insert_user, login_user
+from utils.search_recipe import *
 from utils.search_recipe import search_recipe
 from utils.search_ingredient import search_ingredient
 from utils.create_recipe import create_recipe
@@ -113,14 +115,35 @@ def find_recipe():
     if request.method == 'POST':
         # what the user entered
         searchType = request.form['searchType']
+        sortType = request.form['sortType']
         keyword = request.form['keyword']
+        userid = session['id']
         # results from searching the db
-        results = search_recipe(searchType, keyword)
+        if sortType == 'alpha':
+            results = search_recipe(searchType, keyword, userid)
+        elif sortType == 'rating':
+            results = search_recipe_rating(searchType, keyword, userid)
+        else:
+            results = search_recipe_recent(searchType, keyword, userid)
         # checks to see if there was at least one result
         if len(results) == 0:
             notfound = 'No recipes found'
     return render_template("home.html", results=results, notfound=notfound, keyword=keyword)
 
+
+@app.route("/recipe")
+def display_recipe():
+    recipeid = request.args.get('id')
+    recipe = get_recipe(recipeid)
+    rating = get_rating(recipe[0])
+    creator = get_creator(recipe[7])
+    ingredients = get_ingredients(recipeid)
+    steps = format_steps(recipe[6])
+    return render_template("recipe.html", recipe=recipe, creator=creator,
+                           ingredients=ingredients, steps=steps, rating=rating)
+
+
+@app.route("/make_category", methods=['GET','POST'])
 
 @app.route("/showpantry", methods=['GET', 'POST'])
 @require_login
@@ -175,6 +198,34 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html")
+
+
+
+@app.route("/addcategory")
+def add_category():
+    recipeid = request.args.get('id')
+    categories = get_categories(session['id'])
+    return render_template("add_category.html", recipeid=recipeid, categories=categories)
+
+
+@app.route("/processcategory", methods=['GET', 'POST'])
+def process_category():
+    recipeid = request.args.get('id')
+    recipe = get_recipe(recipeid)
+    rating = get_rating(recipe[0])
+    creator = get_creator(recipe[7])
+    ingredients = get_ingredients(recipeid)
+    steps = format_steps(recipe[6])
+    categoryid = request.form.get('category', False)
+    error = insert_category(recipeid, categoryid)
+    if error == 'failed':
+        message = "This recipe already belongs to that category"
+    elif error == 'failed2':
+        message = "You did not select a category"
+    else:
+        message = "Recipe has been added to category"
+    return render_template("recipe.html", recipe=recipe, creator=creator,
+                           ingredients=ingredients, steps=steps, rating=rating, message=message)
 
 
 if __name__ == '__main__':
