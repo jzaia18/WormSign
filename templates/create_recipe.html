@@ -13,12 +13,12 @@
   <hr />
 
   <div id="createrecipe-wrapper">
-    <form method="post" action="/createrecipe">
+    <form id="recipe-info-form" method="post" action="/createrecipe">
       <div id="recipe-input-wrapper">
 
         <div class="recipe-input recipe-text-input">
           <label for="RecipeName-input">Recipe Name:</label>
-          <input type="text" id="RecipeName-input" name="RecipeName" value="{{user}}'s Awesome Recipe" />
+          <input type="text" id="RecipeName-input" name="RecipeName" value="{{session['user']}}'s Awesome Recipe" />
         </div>
 
         <div class="recipe-input recipe-text-input">
@@ -47,7 +47,7 @@
 
         <div class="recipe-input recipe-text-input">
           <label for="ingredient-search-bar">Select Ingredients:</label>
-          <input type="text" id="ingredient-search-bar" />
+          <input type="text" id="ingredient-search-bar" placeholder="Search" />
           <input type="text" id="secret-ingredients-holder" value="[]" name="Ingredients" />
           <div id="search-results-wrapper">
           </div>
@@ -63,7 +63,7 @@
 
         <div class="recipe-input recipe-text-input">
           <label for="Steps-input">Steps</label>
-          <textarea id="Steps-input" name="Steps"></textarea>
+          <textarea id="Steps-input" name="Steps" placeholder="Enter your steps here. There's no need to number them, simply place a new line in-between each step"></textarea>
         </div>
 
         <div class="recipe-input">
@@ -77,4 +77,56 @@
 
 {% block js %}
 <script src="{{ url_for('static', filename='js/create_recipe.js') }}"> </script>
+<script>
+  console.log("{{recipe_name}}");
+
+  // this script handles recipe editing by prefilling the attributes in the page
+  {% if recipe_id %}
+
+  var hiddenIdHolder = document.createElement("input");
+  hiddenIdHolder.id = "hidden-id-holder";
+  hiddenIdHolder.value = {{recipe_id}};
+  hiddenIdHolder.name = "RecipeId";
+  $("#recipe-info-form")[0].appendChild(hiddenIdHolder);
+
+  {% if recipe_name %}
+  $("#RecipeName-input")[0].value = "{{recipe_name}}";
+  {% endif %}
+
+  {% if description %}
+  $("#Description-input")[0].value = "{{description}}";
+  {% endif %}
+
+  {% if cook_time %}
+  $("#CookTime-input")[0].value = {{cook_time}};
+  {% endif %}
+
+  {% if servings %}
+  $("#Servings-input")[0].value = {{servings}};
+  $("#Servings-displaynum")[0].innerText = "{{servings}}";
+  {% endif %}
+
+  {% if difficulty %}
+  $("#Difficulty-input")[0].value = {{difficulty}};
+  $("#Difficulty-displaynum")[0].innerText = "{{difficulty}}";
+  {% endif %}
+
+  {% if steps %}
+  $("#Steps-input")[0].value = "{{steps}}";
+  {% endif %}
+
+  {% if ingredients %}
+  {% for ingredientInfo in ingredients %}
+  appendSelectedIngredient({
+    target: {
+      id: 'a-' + {{ingredientInfo[0]}},
+      innerText: '{{ingredientInfo[1]}}'
+    }
+  }, {{ingredientInfo[2]}});
+  {% endfor %}
+  {% endif %}
+
+  {% endif %}
+
+</script>
 {% endblock %}

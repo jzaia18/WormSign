@@ -6,17 +6,18 @@ import os, json
 from utils.category_help import *
 from utils.config import config
 from utils.login import insert_user, login_user
-from utils.search_recipe import *
 from utils.search_ingredient import search_ingredient
-from utils.create_recipe import create_recipe
+from utils.create_recipe import *
+from utils.search_recipe import *
 from utils.create_category import create_category
 from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
+from utils.clean_strings import clean_string
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
 app.secret_key = os.urandom(16)
 
-DIFFICULTIES = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Very-Hard']
+DIFFICULTIES = [None, 'Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Very-Hard']
 
 def require_login(f):
     @wraps(f)
@@ -67,30 +68,6 @@ def signout():
     return redirect(url_for('login'))
 
 
-@app.route("/createrecipe", methods=['GET', 'POST'])
-@require_login
-def create_recipe_route():
-    if request.method == 'POST':
-        recipe_name = request.form['RecipeName']
-        description = request.form['Description']
-        cook_time = int(request.form['CookTime'])
-        servings = int(request.form['Servings'])
-        difficulty = DIFFICULTIES[int(request.form['Difficulty'])]
-        ingredient_list = json.loads(request.form['Ingredients'])
-        steps = request.form['Steps']
-        results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
-        #print(results)
-        return redirect(url_for('home'))
-    return render_template("create_recipe.html", user=session.get('user'))
-
-
-@app.route("/ingredientsearch", methods=['POST'])
-def ingredient_search():
-    if 'ingredient_name' not in request.form or not request.form['ingredient_name']:
-        return json.dumps({})
-    return json.dumps(search_ingredient(request.form['ingredient_name']))
-
-
 @app.route("/create_account", methods=['GET', 'POST'])
 def create_account():
     if request.method == 'POST':
@@ -105,6 +82,44 @@ def create_account():
             session['id'] = user_id
             return redirect(url_for('home'))
     return render_template("create_account.html")
+
+
+@app.route("/myrecipes")
+@require_login
+def my_recipes():
+    results = get_my_recipes(session['id'])
+    if results is None:
+        flash("ERROR: Unable to get recipes for user " + session['user'])
+    return render_template("my_recipes.html", recipes=results)
+
+@app.route("/createrecipe", methods=['GET', 'POST'])
+@require_login
+def create_recipe_route():
+    if request.method == 'POST':
+        recipe_name = request.form['RecipeName']
+        description = request.form['Description']
+        cook_time = int(request.form['CookTime'])
+        servings = int(request.form['Servings'])
+        difficulty = DIFFICULTIES[int(request.form['Difficulty'])]
+        ingredient_list = json.loads(request.form['Ingredients'])
+        steps = clean_steps(request.form['Steps'])
+        if 'RecipeId' in request.form:
+            recipe_id = request.form['RecipeId']
+            results = update_recipe(recipe_id, recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps)
+        else:
+            results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
+
+        if not results:
+            flash("There was an error creating this recipe.")
+        return redirect(url_for('home'))
+    return render_template("create_recipe.html")
+
+
+@app.route("/ingredientsearch", methods=['POST'])
+def ingredient_search():
+    if 'ingredient_name' not in request.form or not request.form['ingredient_name']:
+        return json.dumps({})
+    return json.dumps(search_ingredient(request.form['ingredient_name']))
 
 
 @app.route("/findrecipes", methods=['POST'])
@@ -180,6 +195,32 @@ def updatepantry():
         if error:
             flash(error)
     return redirect(url_for('showpantry'))
+
+
+@app.route("/editrecipe")
+@require_login
+def edit_recipe():
+    recipe_id = request.args.get('id')
+    recipe = get_recipe(recipe_id)
+
+    recipe_name = recipe[1]
+    description = recipe[2]
+    servings = recipe[3]
+    cook_time = recipe[4]
+    difficulty = {'Easy': 1, 'Easy-Medium': 2, 'Medium': 3, 'Medium-Hard': 4, 'Hard': 5}[recipe[5]]
+    ingredients = get_ingredients_with_ids(recipe_id)
+    steps = clean_string(recipe[6])
+    return render_template("create_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, description=description, servings=servings, cook_time=cook_time, difficulty=difficulty, ingredients=ingredients, steps=steps)
+
+
+@app.route("/deleterecipe")
+@require_login
+def delete_recipe():
+    recipe_id = request.args.get('id')
+    success = remove_recipe(recipe_id)
+    if not success:
+        flash("Cannot remove this recipe. NOTE: Cooked Recipes cannot be removed.")
+    return redirect(url_for('my_recipes'))
 
 
 @app.route("/make_category", methods=['GET', 'POST'])
