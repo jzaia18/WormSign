@@ -18,7 +18,12 @@
     </h5>
     <div class="block">
       <label>Ingredient Name</label>
-      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt">
+      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt" list="ingredientNames" />
+      <datalist id="ingredientNames">
+        {% for ingredientPair in ingredients %}
+        <option value="{{ingredientPair[1]}}">{{ingredientPair[1]}}</option>
+        {% endfor %}
+      </datalist>
     </div>
     <div class="block">
       <label>Amount</label>

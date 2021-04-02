@@ -92,6 +92,7 @@ def my_recipes():
         flash("ERROR: Unable to get recipes for user " + session['user'])
     return render_template("my_recipes.html", recipes=results)
 
+
 @app.route("/createrecipe", methods=['GET', 'POST'])
 @require_login
 def create_recipe_route():
@@ -174,11 +175,12 @@ def showpantry():       # handles when a user adds to their pantry
         if error:
             flash(error)
 
+    ingredients = search_ingredient('')
     results = show_pantry(uid)  # always want to load pantry table
     # checks to see if there was at least one result
     if len(results) == 0:
         noResults = 'No Pantry Data!'
-    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid)
+    return render_template("manage_pantry.html", results=results, noResults=noResults, uid=uid, ingredients=ingredients)
 
 
 @app.route("/updatepantry", methods=['POST'])  # for when a user updates an order within their pantry
