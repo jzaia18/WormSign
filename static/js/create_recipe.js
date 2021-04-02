@@ -34,7 +34,7 @@ function removeSelectedIngredient(e) {
   createIngredientsSubmission();
 }
 
-function appendSelectedIngredient(e) {
+function appendSelectedIngredient(e, amt) {
   var ingredientDiv = document.createElement("div");
   ingredientDiv.id = e.target.id.split("-")[1];
   ingredientDiv.className = "selected-ingredient";
@@ -47,7 +47,7 @@ function appendSelectedIngredient(e) {
   amountInput.type = "number";
   amountInput.min = 1;
   amountInput.max = 100;
-  amountInput.value = 1;
+  amountInput.value = (amt ? amt : 1);
   amountInput.className = "selected-ingredient-amount";
   amountInput.id = ingredientDiv.id + "-amount";
   amountInput.oninput = ingredientAmountChanged;

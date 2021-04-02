@@ -203,6 +203,34 @@ def get_ingredients(recipeid):
     return ingredients
 
 
+def get_ingredients_with_ids(recipeid):
+    # gets ingredients based on recipeid
+    retrieve = """SELECT X."IngredientId", X."IngredientName", Y."Amount" FROM "Ingredients" X, "IngredientsForRecipe" Y
+        WHERE X."IngredientId" = Y."IngredientId" AND Y."RecipeId" = '{}';""".format(recipeid)
+
+    conn = None
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+        # check if user exists
+
+        cur.execute(retrieve)
+        # store all results
+        ingredients = cur.fetchall()
+        # close the cursor
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return ingredients
+
+
 def get_rating(recipeid):
     # gets rating based on recipeid
     avgrating = """SELECT ROUND(AVG("Rating") ,2) FROM "CookedRecipes" WHERE "RecipeId" = '{}';""".format(recipeid)
@@ -215,6 +243,7 @@ def get_rating(recipeid):
         # create a new cursor
         cur = conn.cursor()
         # check if user exists
+
         cur.execute(avgrating)
         # store all results
         rating = cur.fetchone()
@@ -226,7 +255,6 @@ def get_rating(recipeid):
         if conn is not None:
             conn.close()
     return rating
-
 
 def format_steps(steps):
     steps = steps.replace("[\'", '')
