@@ -4,8 +4,11 @@ html{
 }
 
 body {
-    background-color: #F7F4EF;
+    background-color: #F9F6F2;
     height: 100%;
+}
+
+#page-wrapper {
     padding: 1vw;
 }
 

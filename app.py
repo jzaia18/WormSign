@@ -59,6 +59,13 @@ def login():
             return redirect(url_for('home'))
     return render_template("login.html", error=error)
 
+@app.route("/signout")
+@require_login
+def signout():
+    session.clear()
+    flash("Successfully logged out")
+    return redirect(url_for('login'))
+
 
 @app.route("/createrecipe", methods=['GET', 'POST'])
 @require_login
@@ -119,6 +126,7 @@ def find_recipe():
 
 
 @app.route("/showpantry", methods=['GET', 'POST'])
+@require_login
 def showpantry():       # handles when a user adds to their pantry
     uid = session['id']
     noResults = None
@@ -140,6 +148,7 @@ def showpantry():       # handles when a user adds to their pantry
 
 
 @app.route("/updatepantry", methods=['POST'])  # for when a user updates an order within their pantry
+@require_login
 def updatepantry():
     uid = session['id']
     noResults = None
@@ -158,6 +167,7 @@ def updatepantry():
 
 
 @app.route("/make_category", methods=['GET', 'POST'])
+@require_login
 def make_category():
     error = None
     if request.method == 'POST':
@@ -170,6 +180,7 @@ def make_category():
             return redirect(url_for('home'))
 
     return render_template("make_category.html", error=error)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
