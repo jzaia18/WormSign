@@ -38,15 +38,21 @@ def search_recipe(searchType, keyword):
 def search_recipe_rating(searchType, keyword):
     """ finds recipe based on search """
     if searchType == 'name':
-        checkdb = """SELECT "Recipes.RecipeId", "Recipes.RecipeName", AVG("CookedRecipes.Rating") AS "avg"
+        checkdb = """SELECT "RecipeId", "RecipeName", "avg" FROM 
+                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", AVG("CookedRecipes"."Rating") AS "avg"
                         FROM "Recipes" INNER JOIN "CookedRecipes" 
-                        ON  Recipes."RecipeId" = CookedRecipes."RecipeId";"""
-                        # WHERE X."RecipeId" = Y."RecipeId" AND X."RecipeName" LIKE '%{}%';.format(keyword)
+                        ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId"
+                        GROUP BY "Recipes"."RecipeId") AS "Ratings"
+                        WHERE "RecipeName" LIKE '%{}%' ORDER BY "avg" DESC;""".format(keyword)
 
     elif searchType == 'ingredient':
-        checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
-                            WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
-                            Z."IngredientName" LIKE '%{}%' ORDER BY X."RecipeName" ASC;""".format(keyword)
+        checkdb = """SELECT "Ratings"."RecipeId", "Ratings"."RecipeName", "avg" FROM 
+                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", AVG("CookedRecipes"."Rating") AS "avg"
+                        FROM "Recipes" INNER JOIN "CookedRecipes" 
+                        ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId"
+                        GROUP BY "Recipes"."RecipeId") AS "Ratings", "IngredientsForRecipe" Y, "Ingredients" Z
+                        WHERE "Ratings"."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
+                        Z."IngredientName" LIKE '%{}%' ORDER BY "avg" DESC;""".format(keyword)
     # elif searchType == 'category':
     conn = None
     try:
@@ -73,10 +79,10 @@ def search_recipe_rating(searchType, keyword):
 def search_recipe_recent(searchType, keyword):
     """ finds recipe based on search """
     if searchType == 'name':
-        checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
+        checkdb = """SELECT "RecipeId", "RecipeName", "CreationDate" FROM "Recipes" 
                         WHERE "RecipeName" LIKE '%{}%' ORDER BY "CreationDate" DESC;""".format(keyword)
     elif searchType == 'ingredient':
-        checkdb = """SELECT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
+        checkdb = """SELECT X."RecipeId", X."RecipeName", "CreationDate" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
                         WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                         Z."IngredientName" LIKE '%{}%' ORDER BY X."CreationDate" DESC;""".format(keyword)
     # elif searchType == 'category':
