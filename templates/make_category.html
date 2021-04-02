@@ -10,9 +10,34 @@
 <div class="login">
   <h1>Make a new category</h1>
   <hr />
-  <form method="post" action="">
+  <form method="post" action="/make_category">
     <p><input type="text" name="category_name" value="" placeholder="Category Name"></p>
     <p class="submit"><input type="submit" name="commit" value="Submit"></p>
   </form>
+
+{% if noResults %}
+    <h4>
+      {{ noResults }}
+    </h4>
+    <br />
+  {% elif results %}
+    <table style="width:100%">
+      <thead>
+        <h5>
+      Your Categories:
+        </h5>
+      </thead>
+      <tbody>
+        {% for order in results %}
+          <tr>
+            <td>{{ order[0] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br />
+  {% endif %}
+  <br />
+
 </div>
 {% endblock %}
