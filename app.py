@@ -7,7 +7,6 @@ from utils.category_help import *
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import *
-from utils.search_recipe import search_recipe
 from utils.search_ingredient import search_ingredient
 from utils.create_recipe import create_recipe
 from utils.create_category import create_category
@@ -142,8 +141,6 @@ def display_recipe():
     return render_template("recipe.html", recipe=recipe, creator=creator,
                            ingredients=ingredients, steps=steps, rating=rating)
 
-
-@app.route("/make_category", methods=['GET','POST'])
 
 @app.route("/showpantry", methods=['GET', 'POST'])
 @require_login
