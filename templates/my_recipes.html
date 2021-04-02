@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Pantry{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/my_recipes.css') }}">
+{% endblock %}
+
+{% block body %}
+<div id="recipe-page-wrapper">
+
+  <h1>{{session['user']}}'s Recipes</h1>
+
+  <hr />
+
+  <a href="/createrecipe">Create a new recipe</a>
+
+  <br />
+  <br />
+
+  {% if recipes %}
+  <div id="my-recipes-wrapper">
+    <table id="my-recipes">
+      <tr>
+        <th><h4>My Recipes</h4></th>
+      </tr>
+      {% for recipe in recipes %}
+      <tr>
+        <td id="{{recipe[0]}}"><a href="/recipe?id={{recipe[0]}}">{{recipe[1]}}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% else %}
+  <h3>You have no recipes! Why not <a href="/createrecipe">create one</a>?</h3>
+  {% endif %}
+</div>
+{% endblock %}

@@ -7,7 +7,7 @@ from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import search_recipe
 from utils.search_ingredient import search_ingredient
-from utils.create_recipe import create_recipe
+from utils.create_recipe import create_recipe, get_my_recipes
 from utils.create_category import create_category
 from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
 
@@ -66,6 +66,30 @@ def signout():
     return redirect(url_for('login'))
 
 
+@app.route("/create_account", methods=['GET', 'POST'])
+def create_account():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        insert_result, user_id = insert_user(username, password)
+        if insert_result == 'failed':
+            flash('This Username already exists, please try another')
+        else:
+            flash('Account successfully created!')
+            session['user'] = username
+            session['id'] = user_id
+            return redirect(url_for('home'))
+    return render_template("create_account.html")
+
+
+@app.route("/myrecipes")
+@require_login
+def my_recipes():
+    results = get_my_recipes(session['id'])
+    if results is None:
+        flash("ERROR: Unable to get recipes for user " + session['user'])
+    return render_template("my_recipes.html", recipes=results)
+
 @app.route("/createrecipe", methods=['GET', 'POST'])
 @require_login
 def create_recipe_route():
@@ -88,22 +112,6 @@ def ingredient_search():
     if 'ingredient_name' not in request.form or not request.form['ingredient_name']:
         return json.dumps({})
     return json.dumps(search_ingredient(request.form['ingredient_name']))
-
-
-@app.route("/create_account", methods=['GET', 'POST'])
-def create_account():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        insert_result, user_id = insert_user(username, password)
-        if insert_result == 'failed':
-            flash('This Username already exists, please try another')
-        else:
-            flash('Account successfully created!')
-            session['user'] = username
-            session['id'] = user_id
-            return redirect(url_for('home'))
-    return render_template("create_account.html")
 
 
 @app.route("/findrecipes", methods=['POST'])
