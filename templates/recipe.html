@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<body>
+    <p>
+        <h1>
+            {{ recipe[1] }}
+        </h1>
+        Written on {{ recipe[8] }} by {{ creator[0] }}
+
+    <p>
+        <h6>
+            {{ recipe[2] }}
+        </h6>
+        <br />
+        <h4>
+            Servings: {{ recipe[3] }}
+            <br />
+            Cook Time: {{ recipe[4] }} minutes
+            <br />
+            Difficulty: {{ recipe[5] }}
+            <br />
+            Rating: {{ rating[0] }}
+        </h4>
+    </p>
+    <a href="/home">Return to home</a>
+    <br/>
+    <a href="/addcategory?id={{ recipe[0] }}">Add Recipe to a Category</a>
+    {% if message %}
+    <br/>
+    {{ message }}
+    {% endif %}
+    <br/>
+    <br/>
+    <h2>
+        Ingredients
+    </h2>
+    <ul>
+        {% for ingredient in ingredients %}
+        <li>{{ ingredient[0] }}</li>
+        {% endfor %}
+    </ul>
+    <br/>
+    <h2>
+        Steps
+    </h2>
+    <ol>
+        {% for step in steps %}
+        <li>{{ step }}</li></p>
+        {% endfor %}
+    </ol>
+
+</body>
+{% endblock %}
