@@ -102,12 +102,15 @@ def create_recipe_route():
         servings = int(request.form['Servings'])
         difficulty = DIFFICULTIES[int(request.form['Difficulty'])]
         ingredient_list = json.loads(request.form['Ingredients'])
-        steps = request.form['Steps']
+        steps = clean_steps(request.form['Steps'])
         if 'RecipeId' in request.form:
             recipe_id = request.form['RecipeId']
             results = update_recipe(recipe_id, recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps)
         else:
             results = create_recipe(recipe_name, description, cook_time, servings, difficulty, ingredient_list, steps, session['id'])
+
+        if not results:
+            flash("There was an error creating this recipe.")
         return redirect(url_for('home'))
     return render_template("create_recipe.html")
 

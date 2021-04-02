@@ -173,3 +173,12 @@ def remove_recipe(recipe_id):
         if conn is not None:
             conn.close()
     return result
+
+def clean_steps(steps):
+    if not steps:
+        steps = ''
+    steps = steps.replace('\r', '')
+    steps = steps.split('\n')
+    steps = [x for x in steps if x]
+    steps = str(steps)
+    return steps
