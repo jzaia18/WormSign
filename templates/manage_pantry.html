@@ -9,8 +9,7 @@
 {% block body %}
 <div class="pantry">
   <h1>Manage Your Pantry</h1>
-
-  <a href="/home">Return to the Home Page</a>
+  <hr />
 
   <form method="post" action="/showpantry">
     <h5>
@@ -41,6 +40,7 @@
     <h4>
       {{ noResults }}
     </h4>
+    <br />
   {% elif results %}
     <table style="width:100%">
       <thead>
