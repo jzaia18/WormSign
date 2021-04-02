@@ -1,9 +1,10 @@
 import psycopg2 as psycopg2
+from flask import session
 
 from utils.config import config
 
 
-def search_recipe(searchType, keyword):
+def search_recipe(searchType, keyword, userid):
     """ finds recipe based on search """
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
@@ -12,7 +13,12 @@ def search_recipe(searchType, keyword):
         checkdb = """SELECT DISTINCT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
                         WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
                         Z."IngredientName" LIKE '%{}%' ORDER BY X."RecipeName" ASC;""".format(keyword)
-    # elif searchType == 'category':
+    else:
+        checkdb = """SELECT DISTINCT X."RecipeId", X."RecipeName" 
+                        FROM "Recipes" X, "RecipeCategories" Y, "UserCategories" Z, "Categories" A
+                                WHERE X."RecipeId" = Y."RecipeId" AND Y."CategoryId" = Z."CategoryId" AND
+                                Z."UserId" = '{}' AND Y."CategoryId" = A."CategoryId" AND A."CategoryName" = '{}' 
+                                ORDER BY X."RecipeName" ASC;""".format(userid, keyword)
     conn = None
     try:
         # read database configuration

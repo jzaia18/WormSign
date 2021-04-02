@@ -3,7 +3,7 @@ from functools import wraps
 from utils import example_util
 import os, json
 
-from utils.add_category import *
+from utils.category_help import *
 from utils.config import config
 from utils.login import insert_user, login_user
 from utils.search_recipe import *
@@ -81,9 +81,10 @@ def find_recipe():
         searchType = request.form['searchType']
         sortType = request.form['sortType']
         keyword = request.form['keyword']
+        userid = session['id']
         # results from searching the db
         if sortType == 'alpha':
-            results = search_recipe(searchType, keyword)
+            results = search_recipe(searchType, keyword, userid)
         elif sortType == 'rating':
             results = search_recipe_rating(searchType, keyword)
         else:
@@ -136,12 +137,16 @@ def process_category():
     creator = get_creator(recipe[7])
     ingredients = get_ingredients(recipeid)
     steps = format_steps(recipe[6])
-    categories = get_categories(session['id'])
-    for category in categories:
-        if category[0] == request.form[category[1]]:
-            add_category(recipeid, category[0])
+    categoryid = request.form.get('category', False)
+    error = insert_category(recipeid, categoryid)
+    if error == 'failed':
+        message = "This recipe already belongs to that category"
+    elif error == 'failed2':
+        message = "You did not select a category"
+    else:
+        message = "Recipe has been added to category"
     return render_template("recipe.html", recipe=recipe, creator=creator,
-                           ingredients=ingredients, steps=steps, rating=rating)
+                           ingredients=ingredients, steps=steps, rating=rating, message=message)
 
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@
     </h2>
     <form method="post" action="/processcategory?id={{ recipeid }}">
         {% for category in categories %}
-        <input type="checkbox" id="{{ category[0] }}" name="{{ category[1] }}" value="{{ category[0] }}">
+        <input type="radio" id="{{ category[0] }}" name="category" value="{{ category[0] }}">
         <label for="{{ category[0] }}">{{ category[1] }}</label><br>
         {% endfor %}
         <input type="submit" value="Submit">

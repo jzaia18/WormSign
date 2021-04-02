@@ -29,7 +29,13 @@
             Rating: {{ rating[0] }}
         </h4>
     </p>
+    <a href="/home">Return to home</a>
+    <br/>
     <a href="/addcategory?id={{ recipe[0] }}">Add Recipe to a Category</a>
+    {% if message %}
+    <br/>
+    {{ message }}
+    {% endif %}
     <br/>
     <br/>
     <h2>
@@ -49,5 +55,6 @@
         <li>{{ step }}</li></p>
         {% endfor %}
     </ol>
+
 </body>
 {% endblock %}

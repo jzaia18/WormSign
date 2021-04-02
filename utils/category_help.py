@@ -3,10 +3,10 @@ import psycopg2 as psycopg2
 from utils.config import config
 
 
-def add_category(recipeid, categoryid):
+def insert_category(recipe_id, category_id):
     """ inserts into the RecipeCategories Table """
     check_sql = """SELECT * FROM "RecipeCategories" 
-                    WHERE "RecipeId" = '{}' AND "CategoryId" = '{}';""".format(recipeid, categoryid)
+                    WHERE "RecipeId" = '{}' AND "CategoryId" = '{}';""".format(recipe_id, category_id)
     insert_category_sql = """INSERT INTO "RecipeCategories"("RecipeId", "CategoryId") VALUES(%s, %s)"""
     try:
         # read database configuration
@@ -21,7 +21,7 @@ def add_category(recipeid, categoryid):
 
         if category is None:
             # execute the INSERT statement to the RecipeCategories table
-            cur.execute(insert_category_sql, (recipeid, categoryid))
+            cur.execute(insert_category_sql, (recipe_id, category_id))
             # commit the changes to the database
             conn.commit()
         else:
@@ -31,7 +31,7 @@ def add_category(recipeid, categoryid):
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-        return 'failed'
+        return 'failed2'
     finally:
         if conn is not None:
             conn.close()
