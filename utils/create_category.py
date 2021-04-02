@@ -6,7 +6,8 @@ from utils.config import config
 
 def create_category(user_id, category_name):
     """ create a new category """
-    check_sql = """SELECT * FROM "Categories", "UserCategories" WHERE "CategoryName" = '{}' AND "UserId" = '{}';""".format(category_name, user_id)
+    check_sql = """SELECT * FROM "Categories" INNER JOIN "UserCategories" On "Categories"."CategoryId" = "UserCategories"."CategoryId"
+        WHERE "CategoryName" = '{}' AND "UserId" = '{}';""".format(category_name, user_id)
     insert_category_sql = """INSERT INTO "Categories"("CategoryName") VALUES(%s) RETURNING "CategoryId" """
     insert_user_category_sql = """INSERT INTO "UserCategories"("UserId", "CategoryId") VALUES(%s, %s)"""
     try:
