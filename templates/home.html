@@ -47,17 +47,25 @@
   {% else %}
     {% if keyword %}
     <h4>
-      Showing results for {{ keyword }}
+      Results for {{ keyword }}:
     </h4>
-      <br />
-      {% for recipe in results %}
+
+    <div id="search-results">
+      <table>
+        {% for recipe in results %}
         <tr>
-          <a href="/recipe?id={{ recipe[0] }}">{{ recipe[1] }}</a>  {{ recipe[2] }}
-          <br />
+          <td>
+            <a href="/recipe?id={{ recipe[0] }}">{{ recipe[1] }}</a>
+          </td>
+          <td>
+            {{ recipe[2] }}
+          </td>
         </tr>
-      {% endfor %}
+        {% endfor %}
+      </table>
+    </div>
     {% endif %}
-  {% endif %}
+    {% endif %}
 
 </div>
 {% endblock %}

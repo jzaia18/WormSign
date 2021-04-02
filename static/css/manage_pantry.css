@@ -1,6 +1,9 @@
 table {
     font-family: arial, sans-serif;
-    border-collapse: collapse;
+    width: 100%;
+}
+
+tr {
     width: 100%;
 }
 
@@ -12,4 +15,9 @@ td, th {
 
 tr:nth-child(even) {
     background-color: #dddddd;
+}
+
+#table-overflow-wrapper {
+    height: 400px;
+    overflow-y: scroll;
 }
