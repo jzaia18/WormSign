@@ -86,9 +86,9 @@ def find_recipe():
         if sortType == 'alpha':
             results = search_recipe(searchType, keyword, userid)
         elif sortType == 'rating':
-            results = search_recipe_rating(searchType, keyword)
+            results = search_recipe_rating(searchType, keyword, userid)
         else:
-            results = search_recipe_recent(searchType, keyword)
+            results = search_recipe_recent(searchType, keyword, userid)
         # checks to see if there was at least one result
         if len(results) == 0:
             notfound = 'No recipes found'
