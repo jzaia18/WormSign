@@ -36,7 +36,7 @@ def show_pantry(uid):
 def add_to_pantry(ingredient, amount, purchased, exp, uid):
     """adds a user's input to the pantry table (and other necessary tables)"""
     checkdb = """SELECT "IngredientId" FROM "Ingredients"
-                        WHERE "IngredientName" = '{}';""".format(ingredient)
+                        WHERE "IngredientName" = '{}';""".format(ingredient.replace('\'', ''))
     conn = None
     error = None
     if not amount or not ingredient:
