@@ -223,9 +223,9 @@ def delete_recipe():
     return redirect(url_for('my_recipes'))
 
 
-@app.route("/make_category", methods=['GET', 'POST'])
+@app.route("/my_categories", methods=['GET', 'POST'])
 @require_login
-def make_category():
+def my_categories():
     uid = session['id']
     noResults = None
     if request.method == 'POST':
@@ -235,13 +235,13 @@ def make_category():
             flash('You already have a category with this name, please try another')
         else:
             flash('Category successfully created!')
-            return redirect(url_for('home'))
+            return redirect(url_for('my_categories'))
 
     results = show_categories(uid)  # always want to load pantry table
     # checks to see if there was at least one result
     if len(results) == 0:
         noResults = 'No Category Data!'
-    return render_template("make_category.html", results=results, noResults=noResults, uid=uid)
+    return render_template("my_categories.html", results=results, noResults=noResults, uid=uid)
 
 
 

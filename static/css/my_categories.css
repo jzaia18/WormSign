@@ -1,0 +1,21 @@
+table {
+    font-family: arial, sans-serif;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+#table-overflow-wrapper {
+    max-height: 300px;
+    overflow-y: scroll;
+    max-width: 600px;
+    min-width: 200px;
+}
