@@ -124,3 +124,52 @@ def get_my_recipes(uid):
         if conn is not None:
             conn.close()
     return result
+
+def remove_recipe(recipe_id):
+    """ gets all a users' recipes """
+    result = False
+    conn = None
+    get_cooked_recipes = """SELECT "RecipeId" FROM "CookedRecipes"
+                              WHERE "RecipeId" = %s
+    """
+
+    delete_recipe = """DELETE FROM "Recipes"
+                         WHERE "RecipeId" = %s
+    """
+
+    delete_ingredients = """DELETE FROM "IngredientsForRecipe"
+                                  WHERE "RecipeId" = %s
+    """
+
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        # create a new cursor
+        cur = conn.cursor()
+
+        # check if user exists
+        cur.execute(get_cooked_recipes, (recipe_id,))
+
+        cooked = cur.fetchall()
+
+        # do not allow cooked recipes to be deleted
+        if len(cooked) > 0:
+            return result
+
+        cur.execute(delete_ingredients, (recipe_id,))
+        cur.execute(delete_recipe, (recipe_id,))
+
+        conn.commit()
+
+        # close the cursor
+        cur.close()
+
+        result = True
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    return result

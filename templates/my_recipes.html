@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Manage Pantry{% endblock %}
+{% block title %}My Recipes{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/my_recipes.css') }}">
@@ -28,7 +28,7 @@
       <tr>
         <td class="recipe-name-cell" id="{{recipe[0]}}"><a href="/recipe?id={{recipe[0]}}">{{recipe[1]}}</a></td>
         <td class="recipe-edit-cell"><a href="/editrecipe?id={{recipe[0]}}">Edit</a></td>
-        <td class="recipe-delete-cell"><button type="button" class="recipe-delete-button">X</button></td>
+        <td class="recipe-delete-cell"><a href="/deleterecipe?id={{recipe[0]}}"><button type="button" class="recipe-delete-button">X</button></a></td>
       </tr>
       {% endfor %}
     </table>

@@ -207,6 +207,16 @@ def edit_recipe():
     return render_template("create_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, description=description, servings=servings, cook_time=cook_time, difficulty=difficulty, ingredients=ingredients, steps=steps)
 
 
+@app.route("/deleterecipe")
+@require_login
+def delete_recipe():
+    recipe_id = request.args.get('id')
+    success = remove_recipe(recipe_id)
+    if not success:
+        flash("Cannot remove this recipe. NOTE: Cooked Recipes cannot be removed.")
+    return redirect(url_for('my_recipes'))
+
+
 @app.route("/make_category", methods=['GET', 'POST'])
 @require_login
 def make_category():
