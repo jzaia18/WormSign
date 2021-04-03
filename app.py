@@ -215,7 +215,11 @@ def edit_recipe():
     cook_time = recipe[4]
     difficulty = {'Easy': 1, 'Easy-Medium': 2, 'Medium': 3, 'Medium-Hard': 4, 'Hard': 5}[recipe[5]]
     ingredients = get_ingredients_with_ids(recipe_id)
-    steps = clean_string(recipe[6])
+    steps = recipe[6]
+
+    steps = eval(steps)
+    steps = clean_string("\r\n".join(steps))
+
     return render_template("create_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, description=description, servings=servings, cook_time=cook_time, difficulty=difficulty, ingredients=ingredients, steps=steps)
 
 
