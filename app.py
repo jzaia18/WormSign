@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from functools import wraps
+
+from numpy import double
+
 from utils import example_util
 import os, json
 
@@ -228,25 +231,28 @@ def process_category():
 
 @app.route("/cookrecipe", methods=['GET', 'POST'])
 def cook_recipe():
-    orders = None
+    orders = []
     recipeid = request.args.get('id')
-    recipe = get_recipe(recipeid)
     user_id = session['id']
+    scale = request.form['scale']
+    rating = request.form['rating']
     ingredients = get_ingredients(recipeid)
     for ingredient in ingredients:
         pantry_item = check_for_ingredient(ingredient[0], user_id)
         if pantry_item is None:
-            flash('Couldn\'t make recipe: missing' + ingredient[1])
+            flash('Couldn\'t make recipe: missing ' + ingredient[1])
             return redirect(url_for('home'))
         else:
-            if ingredient[2] <= pantry_item[1]:
-                orders.append((pantry_item[1] - ingredient[2]), pantry_item[0])
+            if (double(scale) * ingredient[2]) <= pantry_item[1]:
+                orders.append((int(pantry_item[1] - (double(scale) * ingredient[2])), pantry_item[0]))
             else:
-                flash('Couldn\'t make recipe: not enough' + ingredient[1])
+                flash('Couldn\'t make recipe: not enough ' + ingredient[1])
                 return redirect(url_for('home'))
     for order in orders:
-
-
+        remove_ingredients(order)
+    cook(scale, rating, user_id, recipeid)
+    flash('Recipe successfully cooked')
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
