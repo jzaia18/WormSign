@@ -141,6 +141,10 @@ def remove_recipe(recipe_id):
                                   WHERE "RecipeId" = %s
     """
 
+    delete_categories = """DELETE FROM "RecipeCategories"
+                                  WHERE "RecipeId" = %s
+    """
+
     try:
         # read database configuration
         params = config()
@@ -159,6 +163,7 @@ def remove_recipe(recipe_id):
             return result
 
         cur.execute(delete_ingredients, (recipe_id,))
+        cur.execute(delete_categories, (recipe_id,))
         cur.execute(delete_recipe, (recipe_id,))
 
         conn.commit()
