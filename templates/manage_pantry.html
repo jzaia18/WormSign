@@ -18,7 +18,12 @@
     </h5>
     <div class="block">
       <label>Ingredient Name</label>
-      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt">
+      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt" list="ingredientNames" />
+      <datalist id="ingredientNames">
+        {% for ingredientPair in ingredients %}
+        <option value="{{ingredientPair[1]}}">{{ingredientPair[1]}}</option>
+        {% endfor %}
+      </datalist>
     </div>
     <div class="block">
       <label>Amount</label>
@@ -37,12 +42,12 @@
   <br />
 
   {% if noResults %}
-    <h4>
-      {{ noResults }}
-    </h4>
-    <br />
+  <h4>
+    {{ noResults }}
+  </h4>
   {% elif results %}
-    <table style="width:100%">
+  <div id="table-overflow-wrapper">
+    <table id="search-results" style="width:100%">
       <thead>
         <tr>
           <th>Ingredient</th>
@@ -53,17 +58,19 @@
       </thead>
       <tbody>
         {% for order in results %}
-          <tr>
-            <td>{{ order[0] }}</td>
-            <td>{{ order[1] }}</td>
-            <td>{{ order[2] }}</td>
-            <td>{{ order[3] }}</td>
-          </tr>
+        <tr>
+          <td>{{ order[0] }}</td>
+          <td>{{ order[1] }}</td>
+          <td>{{ order[2] }}</td>
+          <td>{{ order[3] }}</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
-    <br />
+  </div>
   {% endif %}
+
+    <br />
 
   <form method="post" action="/updatepantry">
     <h5>

@@ -1,0 +1,41 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px;
+}
+
+td, th {
+    text-align: left;
+    padding: 8px;
+}
+
+tr {
+    border: 1px solid #dddddd;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.recipe-delete-button {
+    background-color: #990000;
+    border-color: #800000;
+    border-radius: 5px;
+    color: white;
+    height: 1.9rem;
+    width: 1.9rem;
+    font-size: 1rem;
+    float: right;
+}
+
+.recipe-name-cell {
+}
+
+.recipe-edit-cell {
+    width: 3rem;
+}
+
+.recipe-delete-cell {
+    width: 3rem;
+}

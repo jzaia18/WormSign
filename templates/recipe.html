@@ -29,8 +29,6 @@
             Rating: {{ rating[0] }}
         </h4>
     </p>
-    <a href="/home">Return to home</a>
-    <br/>
     <a href="/addcategory?id={{ recipe[0] }}">Add Recipe to a Category</a>
     {% if message %}
     <br/>
@@ -43,7 +41,7 @@
     </h2>
     <ul>
         {% for ingredient in ingredients %}
-        <li>{{ ingredient[0] }}</li>
+        <li>{{ ingredient[1] }}</li>
         {% endfor %}
     </ul>
     <br/>
@@ -55,6 +53,16 @@
         <li>{{ step }}</li></p>
         {% endfor %}
     </ol>
-
+    <br/>
+    <h5>
+        Cook Recipe
+    </h5>
+    <form method="post" action="/cookrecipe?id={{ recipe[0] }}">
+        Scale:
+        <input type="text" style="width:50px;" name="scale" value="1"  placeholder="eg. 3" required>
+        Rating:
+        <input type="text" style="width:50px;" name="rating" value=""  min="0" max="5" placeholder="1-5" required>
+        <input type="submit" style="background-color:green" name="commit" value="Cook!">
+        </form>
 </body>
 {% endblock %}

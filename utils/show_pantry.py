@@ -6,7 +6,6 @@ from utils.config import config
 
 def show_pantry(uid):
     """ gets a user's pantry data """
-    global results
     checkdb = """SELECT I."IngredientName", P."CurrentQuantity", P."ExpirationDate", P."OrderId"
                         FROM "UserOrders" U, "OrderIngredients" O, "Ingredients" I, "Pantry" P
                         WHERE U."UserId" = '{}' AND U."OrderId" = O."OrderId" AND
@@ -36,7 +35,7 @@ def show_pantry(uid):
 def add_to_pantry(ingredient, amount, purchased, exp, uid):
     """adds a user's input to the pantry table (and other necessary tables)"""
     checkdb = """SELECT "IngredientId" FROM "Ingredients"
-                        WHERE "IngredientName" = '{}';""".format(ingredient)
+                        WHERE "IngredientName" = '{}';""".format(ingredient.replace('\'', ''))
     conn = None
     error = None
     if not amount or not ingredient:
@@ -138,3 +137,4 @@ def update_pantry(order_id, amount, uid):
         if conn is not None:
             conn.close()
     return error
+

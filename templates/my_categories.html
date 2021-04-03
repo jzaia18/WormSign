@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}My Categories{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/my_categories.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="login">
+  <h1>Make a new category</h1>
+  <hr />
+
+  {% if noResults %}
+  <h4>
+    {{ noResults }}
+  </h4>
+  <br />
+  {% elif results %}
+  <div id="table-overflow-wrapper">
+    <table>
+      <thead>
+        <th>
+          Your Categories:
+        </th>
+      </thead>
+      <tbody>
+        {% for order in results %}
+        <tr>
+          <td>{{ order[0] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <br />
+
+  <h5>Create new category:</h5>
+  <form method="post" action="/my_categories">
+    <p><input type="text" name="category_name" value="" placeholder="Category Name"></p>
+    <p class="submit"><input type="submit" name="commit" value="Submit"></p>
+  </form>
+
+</div>
+{% endblock %}
