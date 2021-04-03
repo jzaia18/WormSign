@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from functools import wraps
+
+from numpy import double
+
 from utils import example_util
 import os, json
 
 from utils.category_help import *
 from utils.config import config
+from utils.cook_recipes import *
 from utils.login import insert_user, login_user
 from utils.search_ingredient import search_ingredient
 from utils.create_recipe import *
@@ -246,7 +250,6 @@ def my_categories():
     return render_template("my_categories.html", results=results, noResults=noResults, uid=uid)
 
 
-
 @app.route("/addcategory")
 def add_category():
     recipeid = request.args.get('id')
@@ -272,6 +275,32 @@ def process_category():
         message = "Recipe has been added to category"
     return render_template("recipe.html", recipe=recipe, creator=creator,
                            ingredients=ingredients, steps=steps, rating=rating, message=message)
+
+
+@app.route("/cookrecipe", methods=['GET', 'POST'])
+def cook_recipe():
+    orders = []
+    recipeid = request.args.get('id')
+    user_id = session['id']
+    scale = request.form['scale']
+    rating = request.form['rating']
+    ingredients = get_ingredients(recipeid)
+    for ingredient in ingredients:
+        pantry_item = check_for_ingredient(ingredient[0], user_id)
+        if pantry_item is None:
+            flash('Couldn\'t make recipe: missing ' + ingredient[1])
+            return redirect(url_for('home'))
+        else:
+            if (double(scale) * ingredient[2]) <= pantry_item[1]:
+                orders.append((int(pantry_item[1] - (double(scale) * ingredient[2])), pantry_item[0]))
+            else:
+                flash('Couldn\'t make recipe: not enough ' + ingredient[1])
+                return redirect(url_for('home'))
+    for order in orders:
+        remove_ingredients(order)
+    cook(scale, rating, user_id, recipeid)
+    flash('Recipe successfully cooked')
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':

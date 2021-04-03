@@ -179,7 +179,7 @@ def get_creator(userid):
 
 def get_ingredients(recipeid):
     # gets ingredients based on recipeid
-    retrieve = """SELECT X."IngredientName" FROM "Ingredients" X, "IngredientsForRecipe" Y
+    retrieve = """SELECT X."IngredientId", X."IngredientName", Y."Amount" FROM "Ingredients" X, "IngredientsForRecipe" Y
         WHERE X."IngredientId" = Y."IngredientId" AND Y."RecipeId" = '{}';""".format(recipeid)
     conn = None
     try:

@@ -6,7 +6,6 @@ from utils.config import config
 
 def show_pantry(uid):
     """ gets a user's pantry data """
-    global results
     checkdb = """SELECT I."IngredientName", P."CurrentQuantity", P."ExpirationDate", P."OrderId"
                         FROM "UserOrders" U, "OrderIngredients" O, "Ingredients" I, "Pantry" P
                         WHERE U."UserId" = '{}' AND U."OrderId" = O."OrderId" AND
@@ -138,3 +137,4 @@ def update_pantry(order_id, amount, uid):
         if conn is not None:
             conn.close()
     return error
+
