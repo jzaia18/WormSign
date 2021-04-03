@@ -201,7 +201,6 @@ def make_category():
     return render_template("make_category.html")
 
 
-
 @app.route("/addcategory")
 def add_category():
     recipeid = request.args.get('id')
