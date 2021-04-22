@@ -330,7 +330,7 @@ def recommendations():
     if querytype == 'best':
         subtitle = "Top 50 Recipes by Rating"
 
-        explanation = "Displays the top 50 highest rated recipes. We hope you enjoy them as much as our users do!"
+        explanation = "The all-time top 50 highest rated recipes. We hope you enjoy them as much as our users do!"
 
         data = recommend_by_rating()[:50]
     elif querytype == 'recent':
