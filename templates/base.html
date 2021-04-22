@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css' ) }}">
+
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
     {% block css %} {% endblock %}
@@ -32,6 +33,17 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/showpantry">My Pantry</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="recommendationsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Recommendations
+            </a>
+            <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="recommendationsDropdown">
+              <a class="dropdown-item" href="#">Highest Rated</a>
+              <a class="dropdown-item" href="#">Most Recent</a>
+              <a class="dropdown-item" href="#">Based on my pantry</a>
+              <a class="dropdown-item" href="#">For users like me</a>
+            </div>
           </li>
           {% if 'user' in session %}
           <li class="nav-item">
