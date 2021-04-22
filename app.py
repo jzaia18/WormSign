@@ -16,6 +16,7 @@ from utils.search_recipe import *
 from utils.create_category import create_category, show_categories
 from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
 from utils.clean_strings import clean_string
+from utils.recommendations import *
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -314,6 +315,7 @@ def recommendations():
     querytype = None
     subtitle = None
     explanation = None
+    # NOTE: data should be a list containing tuples in the form (id, recipe name, rating)
     data = None
 
     if 'querytype' not in request.args:
@@ -327,7 +329,10 @@ def recommendations():
 
     if querytype == 'best':
         subtitle = "Top 50 Recipes by Rating"
-        pass
+
+        explanation = "Displays the top 50 highest rated recipes. We hope you enjoy them as much as our users do!"
+
+        data = recommend_by_rating()[:50]
     elif querytype == 'recent':
         pass
     elif querytype == 'pantry':
