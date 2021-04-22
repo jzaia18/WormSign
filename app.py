@@ -307,5 +307,36 @@ def cook_recipe():
     return redirect(url_for('home'))
 
 
+@app.route("/recommendations")
+@require_login
+def recommendations():
+    # All attributes that must go to recommendations page
+    querytype = None
+    subtitle = None
+    explanation = None
+    data = None
+
+    if 'querytype' not in request.args:
+        querytype = 'best'
+        flash("No query specified, showing top rated")
+    elif request.args.get('querytype') not in ['best', 'recent', 'pantry', 'likeme']:
+        querytype = 'best'
+        flash("Invalid query, showing top rated")
+    else:
+        querytype = request.args.get('querytype')
+
+    if querytype == 'best':
+        subtitle = "Top 50 Recipes by Rating"
+        pass
+    elif querytype == 'recent':
+        pass
+    elif querytype == 'pantry':
+        pass
+    else: #querytype == 'likeme':
+        pass
+
+    return render_template("recommendations.html", querytype=querytype, subtitle=subtitle, explanation=explanation, data=data)
+
+
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)

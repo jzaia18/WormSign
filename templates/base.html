@@ -39,10 +39,10 @@
               Recommendations
             </a>
             <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="recommendationsDropdown">
-              <a class="dropdown-item" href="#">Highest Rated</a>
-              <a class="dropdown-item" href="#">Most Recent</a>
-              <a class="dropdown-item" href="#">Based on my pantry</a>
-              <a class="dropdown-item" href="#">For users like me</a>
+              <a class="dropdown-item" href="/recommendations?querytype=best">Highest Rated</a>
+              <a class="dropdown-item" href="/recommendations?querytype=recent">Most Recent</a>
+              <a class="dropdown-item" href="/recommendations?querytype=pantry">Based on my pantry</a>
+              <a class="dropdown-item" href="/recommendations?querytype=likeme">For users like me</a>
             </div>
           </li>
           {% if 'user' in session %}
