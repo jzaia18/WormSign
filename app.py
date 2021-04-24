@@ -16,6 +16,7 @@ from utils.search_recipe import *
 from utils.create_category import create_category, show_categories
 from utils.show_pantry import show_pantry, add_to_pantry, update_pantry
 from utils.clean_strings import clean_string
+from utils.recommendations import *
 
 app = Flask(__name__)
 DIR = os.path.dirname(__file__) or '.'
@@ -305,6 +306,41 @@ def cook_recipe():
     cook(scale, rating, user_id, recipeid)
     flash('Recipe successfully cooked')
     return redirect(url_for('home'))
+
+
+@app.route("/recommendations")
+@require_login
+def recommendations():
+    # All attributes that must go to recommendations page
+    querytype = None
+    subtitle = None
+    explanation = None
+    # NOTE: data should be a list containing tuples in the form (id, recipe name, rating)
+    data = None
+
+    if 'querytype' not in request.args:
+        querytype = 'best'
+        flash("No query specified, showing top rated")
+    elif request.args.get('querytype') not in ['best', 'recent', 'pantry', 'likeme']:
+        querytype = 'best'
+        flash("Invalid query, showing top rated")
+    else:
+        querytype = request.args.get('querytype')
+
+    if querytype == 'best':
+        subtitle = "Top 50 Recipes by Rating"
+
+        explanation = "The all-time top 50 highest rated recipes. We hope you enjoy them as much as our users do!"
+
+        data = recommend_by_rating()[:50]
+    elif querytype == 'recent':
+        pass
+    elif querytype == 'pantry':
+        pass
+    else: #querytype == 'likeme':
+        pass
+
+    return render_template("recommendations.html", querytype=querytype, subtitle=subtitle, explanation=explanation, data=data)
 
 
 if __name__ == '__main__':

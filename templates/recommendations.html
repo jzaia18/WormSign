@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Recommendations{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/recommendations.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<div id="wrapper">
+  <h1>
+    {{subtitle}}
+  </h1>
+
+  <hr />
+
+  {{explanation}}
+
+  <br />
+  <br />
+
+  {% if data %}
+  <div id="search-results">
+    <table>
+      <tr>
+        <th>
+          Recipe
+        </th>
+        <th>
+          Rating
+        </th>
+      </tr>
+      {% for recipe in data %}
+      <tr>
+        <td>
+          <a href="/recipe?id={{ recipe[0] }}">{{ recipe[1] }}</a>
+        </td>
+        <td>
+          {{ recipe[2] }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% else %}
+  There are no results to display!
+  {% endif %}
+</div>
+{% endblock %}
