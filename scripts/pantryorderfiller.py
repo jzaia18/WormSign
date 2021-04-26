@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     checkdb = """SELECT "IngredientName" FROM "Ingredients" """
     ingredients = get_column(checkdb)
-    for i in range(0, len(uids)):
+    for i in range(0, 3):
         rand_ingredient = random.choice(ingredients)  # select random ingredient name
         rand_user = random.choice(uids)               # select a random lucky user to add ingredient to
         cur_time = datetime.datetime.now()
