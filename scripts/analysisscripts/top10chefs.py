@@ -1,7 +1,4 @@
-import pickle
 import psycopg2 as psycopg2
-import time
-
 
 def top_10_chefs():
     sql = """WITH X as (SELECT "CookedRecipes"."UserId", avg("CookedRecipes"."Rating") AverageRating, COUNT(*) RecipesCooked FROM "CookedRecipes" GROUP BY "UserId" ORDER BY AverageRating DESC)
