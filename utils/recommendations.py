@@ -1,3 +1,5 @@
+import time
+
 import psycopg2 as psycopg2
 
 from utils.config import config
@@ -65,19 +67,15 @@ def recommend_by_recent():
 
 
 def recommend_by_pantry(user_id):
+    start_time = time.time()
     """ finds recipe based on search """
     checkdbIDs = """SELECT "RecipeId"
                  FROM "Recipes"
                  ORDER BY "RecipeId" DESC;"""
 
-    checkdbUserPantry = """SELECT I."IngredientName", P."CurrentQuantity", P."ExpirationDate", P."OrderId"
-                        FROM "UserOrders" U, "OrderIngredients" O, "Ingredients" I, "Pantry" P
-                        WHERE U."UserId" = '{}' AND U."OrderId" = O."OrderId" AND
-                             O."IngredientId" = I."IngredientId" AND U."OrderId" = P."OrderId";""".format(user_id)
     recipeIds = []
     goodOnes = []
     canCook = []
-    userPantry = []
 
     conn = None
     try:
@@ -90,9 +88,7 @@ def recommend_by_pantry(user_id):
         # check if user exists
         cur.execute(checkdbIDs)
         # store all results
-        recipeIds = cur.fetchall()[:50]
-        cur.execute(checkdbUserPantry)
-        userPantry = cur.fetchall()  # get the user's pantry
+        recipeIds = cur.fetchall()
         # close the cursor
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -115,12 +111,12 @@ def recommend_by_pantry(user_id):
                     break
         if include:
             goodOnes.append(recipeid[0])  # this recipe passes!
-            print(recipeid)
 
     for winner in goodOnes:
         recipe = get_recipe(winner)
         canCook.append([recipe[0], recipe[1], get_rating(winner)[0]])
     canCook.sort(reverse=True, key=sortFunc)
+    print(time.time() - start_time)
     return canCook
 
 
