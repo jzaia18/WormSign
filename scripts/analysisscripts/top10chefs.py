@@ -32,7 +32,7 @@ def top_10_chefs():
     # might want to grab the user name too before using this data, can easily change the number of recipes needed
     # to be considered a "chef" above
     for result in results:
-        print("UserId: " + str(result[0]) + "  Average Rating of Recipes: " + str(result[1]) + "  Number of Recipes cooked: " + str(result[2]))
+        print("UserId: " + str(result[0]) + "  Average Rating of Recipes: " + str(result[1]) + "  Number of Recipes created: " + str(result[2]))
 
 
 if __name__ == '__main__':
