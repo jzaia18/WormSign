@@ -65,11 +65,9 @@ def add_to_pantry(ingredient, amount, purchased, exp, uid):
             # connect new order to user
             checkdb = """INSERT INTO "UserOrders"("UserId", "OrderId") VALUES(%s, %s)"""
             cur.execute(checkdb, (uid, order_id))
-
             # connect order to ingredient
             checkdb = """INSERT INTO "OrderIngredients"("OrderId", "IngredientId") VALUES(%s, %s)"""
             cur.execute(checkdb, (order_id, ingred_id))
-
             # commit the changes!
             conn.commit()
         else:
@@ -97,9 +95,9 @@ def update_pantry(order_id, amount, uid):
         return error
     try:
         # read database configuration
-        params = config()
+        # params = config()
         # connect to the PostgreSQL database
-        conn = psycopg2.connect(**params)
+        conn = psycopg2.connect(host="reddwarf.cs.rit.edu", database="p320_03f", user="p320_03f", password="KFnU9gXi7JFk")
         # create a new cursor
         cur = conn.cursor()
 

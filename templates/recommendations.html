@@ -27,9 +27,15 @@
         <th>
           Recipe
         </th>
+        {% if querytype == 'recent' %}
+        <th>
+          Date
+        </th>
+        {% else %}
         <th>
           Rating
         </th>
+        {% endif %}
       </tr>
       {% for recipe in data %}
       <tr>

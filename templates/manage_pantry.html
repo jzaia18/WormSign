@@ -18,7 +18,7 @@
     </h5>
     <div class="block">
       <label>Ingredient Name</label>
-      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt" list="ingredientNames" />
+      <input type="text" style="width:400px;" name="pantry_order" value="" placeholder="e.g. salt" list="ingredientNames" required/>
       <datalist id="ingredientNames">
         {% for ingredientPair in ingredients %}
         <option value="{{ingredientPair[1]}}">{{ingredientPair[1]}}</option>
@@ -27,7 +27,7 @@
     </div>
     <div class="block">
       <label>Amount</label>
-      <input type="number" name="amount" value="" min="1" max="20000">
+      <input type="number" name="amount" value="" min="1" max="20000" placeholder ="1" required>
     </div>
     <div class="block">
       <label>Purchase Date</label>
@@ -78,11 +78,11 @@
     </h5>
     <div class="block">
       <label>Order ID</label>
-      <input type="number" name="update_order" value="123456">
+      <input type="number" name="update_order" value="" placeholder ="123456" required>
     </div>
     <div class="block">
       <label>New Amount (0 deletes)</label>
-      <input type="number" name="new_amount" value="0" min="0" max="20000">
+      <input type="number" name="new_amount" value="" min="0" max="20000" placeholder= "0" required>
     </div>
     <input type="submit" name="commit" value="Update Item">
   </form>

@@ -334,10 +334,19 @@ def recommendations():
 
         data = recommend_by_rating()[:50]
     elif querytype == 'recent':
-        pass
+        subtitle = "50 Most Recently Added Recipes"
+
+        explanation = "Here are the 50 newest recipes to be added to the database.  " \
+                      "Try them out and experience something new!"
+
+        data = recommend_by_recent()[:50]
     elif querytype == 'pantry':
-        pass
-    else:
+        subtitle = "Recipes Based On Your Pantry"
+
+        explanation = "Here are some recipes that you have the ingredients to make right now!"
+
+        data = recommend_by_pantry(session['id'])
+    else: #querytype == 'likeme':
         subtitle = "Recommended Just for You"
         explanation = "Users with similar tastes to yours have also made these recipes!"
         data = recommend_by_user(session['id'])
