@@ -35,7 +35,7 @@ def most_cooked_recipes():
     plt.hist(freqData, range(1, largest))
     plt.xticks(range(1, largest,2))
 
-    plt.title("How Frequently Unique Recipes are Cooked")
+    plt.title("Frequency of Cooking Recipes")
     plt.xlabel("Times cooked")
     plt.ylabel("Number of recipes")
     plt.show()
