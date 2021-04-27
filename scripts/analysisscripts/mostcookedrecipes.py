@@ -1,3 +1,5 @@
+import numpy as np
+import matplotlib.pyplot as plt
 import psycopg2 as psycopg2
 
 
@@ -24,8 +26,19 @@ def most_cooked_recipes():
             conn.close()
 
     # will put this data into some kind of graphic
-    for result in results:
-        print("RecipeId: " + str(result[0]) + "  Number of times cooked: " + str(result[1]))
+    # for result in results:
+    #     print("RecipeId: " + str(result[0]) + "  Number of times cooked: " + str(result[1]))
+
+    freqData = [x[1] for x in results]
+    largest = max(freqData) + 1 # add 1 to account for exclusive
+
+    plt.hist(freqData, range(1, largest))
+    plt.xticks(range(1, largest,2))
+
+    plt.title("How Frequently Unique Recipes are Cooked")
+    plt.xlabel("Times cooked")
+    plt.ylabel("Number of recipes")
+    plt.show()
 
 if __name__ == '__main__':
     most_cooked_recipes()
