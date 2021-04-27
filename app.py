@@ -337,8 +337,10 @@ def recommendations():
         pass
     elif querytype == 'pantry':
         pass
-    else: #querytype == 'likeme':
-        pass
+    else:
+        subtitle = "Recommended Just for You"
+        explanation = "Users with similar tastes to yours have also made these recipes!"
+        data = recommend_by_user(session['id'])
 
     return render_template("recommendations.html", querytype=querytype, subtitle=subtitle, explanation=explanation, data=data)
 
