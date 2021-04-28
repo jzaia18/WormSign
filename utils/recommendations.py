@@ -111,13 +111,13 @@ def recommend_by_pantry(user_id):
                             U."OrderId" = P."OrderId") AS "UserPantry", "IngredientsForRecipe"
                         WHERE "UserPantry"."IngredientId" = "IngredientsForRecipe"."IngredientId" AND
                         "UserPantry"."CurrentQuantity" >= "IngredientsForRecipe"."Amount") AS "Available"
-                    GROUP BY "Available"."RecipeId") AS "IngYouHave",
-                        (SELECT "RecipeId", COUNT("IngredientId") AS "NumYouNeed" FROM "IngredientsForRecipe"
-                            GROUP BY "RecipeId") AS "IngYouNeed",
-                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", 
-                            ROUND(AVG("CookedRecipes"."Rating") ,2) AS "avg" FROM "Recipes" INNER JOIN "CookedRecipes" 
-                            ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId" 
-                            GROUP BY "Recipes"."RecipeId") AS "Ratings" 
+                        GROUP BY "Available"."RecipeId") AS "IngYouHave",
+                    (SELECT "RecipeId", COUNT("IngredientId") AS "NumYouNeed" FROM "IngredientsForRecipe"
+                        GROUP BY "RecipeId") AS "IngYouNeed",
+                    (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", 
+                        ROUND(AVG("CookedRecipes"."Rating") ,2) AS "avg" FROM "Recipes" INNER JOIN "CookedRecipes" 
+                        ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId" 
+                        GROUP BY "Recipes"."RecipeId") AS "Ratings" 
                 WHERE "IngYouNeed"."RecipeId" = "IngYouHave"."RecipeId" AND 
                 "IngYouNeed"."NumYouNeed" = "IngYouHave"."NumYouHave" AND 
                 "IngYouHave"."RecipeId" = "Ratings"."RecipeId" ORDER BY "avg" DESC;""".format(user_id)
