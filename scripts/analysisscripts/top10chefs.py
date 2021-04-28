@@ -1,8 +1,14 @@
 import psycopg2 as psycopg2
 
 def top_10_chefs():
-    sql = """WITH X as (SELECT "CookedRecipes"."UserId", avg("CookedRecipes"."Rating") AverageRating, COUNT(*) RecipesCooked FROM "CookedRecipes" GROUP BY "UserId" ORDER BY AverageRating DESC)
-            Select * From X where RecipesCooked > 10 limit 10"""
+    sql = """WITH Y AS(
+            (WITH X as (Select * from "CookedRecipes" C
+            INNER JOIN "Recipes" R on R."RecipeId" = C."RecipeId"
+            INNER JOIN "Users" U on R."UserId" = U."UserId")
+            Select X."Username", avg(X."Rating") AverageRating, COUNT(*) RecipesCreatedCount from X
+            GROUP BY X."Username"
+            ORDER BY AverageRating DESC))
+            Select * FROM Y WHERE RecipesCreatedCount > 10 limit 10"""
 
     conn = None
     try:
@@ -26,7 +32,7 @@ def top_10_chefs():
     # might want to grab the user name too before using this data, can easily change the number of recipes needed
     # to be considered a "chef" above
     for result in results:
-        print("UserId: " + str(result[0]) + "  Average Rating of Recipes: " + str(result[1]) + "  Number of Recipes cooked: " + str(result[2]))
+        print("UserId: " + str(result[0]) + "  Average Rating of Recipes: " + str(result[1]) + "  Number of Recipes created: " + str(result[2]))
 
 
 if __name__ == '__main__':
