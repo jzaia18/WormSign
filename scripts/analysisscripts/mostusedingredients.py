@@ -29,9 +29,12 @@ def most_used_ingredients():
         if conn is not None:
             conn.close()
 
-    for result in results:
-        print("IngredientId: " + str(result[0]) + "  IngredientName: " + str(
-            result[1]) + "  Number of uses " + str(result[2]))
+    print("Ingredient MVPs:")
+    i = 0
+    for result in results[:20]:
+        print(str(i:=i+1) + ": " + str(result[1]) + " (" + str(result[2]) + " recipes)")
+
+
 
 
 if __name__ == '__main__':
