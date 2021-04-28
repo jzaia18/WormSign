@@ -4,9 +4,9 @@ import psycopg2 as psycopg2
 
 
 def most_cooked_recipes():
-    sql = """SELECT "CookedRecipes"."UserId", COUNT(*) c
-    FROM "CookedRecipes"
-    GROUP BY "UserId"
+    sql = """SELECT "IngredientsForRecipe"."IngredientId", COUNT(*) c
+    FROM "IngredientsForRecipe"
+    GROUP BY "IngredientId"
     ORDER BY c
     DESC"""
 
@@ -36,15 +36,15 @@ def most_cooked_recipes():
     freqData = np.array([x[1] for x in results])
     largest = max(freqData) + 1 # add 1 to account for exclusive
 
-    bins = [1,2,5,10,20,50,100,10000]
-    binlabels = ["1", "2-5", "6-10", "11-20", "21-50", "51-100", "101+"]
+    bins = [1,2,10,50,100,200,1000]
+    binlabels = ["1", "2-10", "11-50", "51-100", "101-200", "201+"]
     h = np.histogram(freqData, bins=bins)
     plt.bar(binlabels, h[0], color="#123456")
     # plt.xticks(bins)
 
-    plt.title("User Productivity")
-    plt.xlabel("Amount of recipes cooked")
-    plt.ylabel("Number of users")
+    plt.title("Ingredient Diversity")
+    plt.xlabel("Times used in unique recipes")
+    plt.ylabel("Number of Ingredients")
     plt.show()
 
 if __name__ == '__main__':
