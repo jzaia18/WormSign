@@ -105,15 +105,26 @@ def recommend_by_user(userid):
 
 
 def recommend_by_pantry(user_id):
-    start_time = time.time()
-    """ finds recipe based on search """
-    checkdbIDs = """SELECT "RecipeId"
-                 FROM "Recipes"
-                 ORDER BY "RecipeId" DESC;"""
 
-    recipeIds = []
-    goodOnes = []
-    canCook = []
+    checkdb = """SELECT DISTINCT "Ratings"."RecipeId", "RecipeName", "avg" FROM
+                    (SELECT "Available"."RecipeId", COUNT("Available"."RecipeId") AS "NumYouHave" FROM
+                        (SELECT "IngredientsForRecipe"."RecipeId" FROM
+                            (SELECT I."IngredientId", P."CurrentQuantity", P."OrderId" FROM "UserOrders" U, 
+                            "OrderIngredients" O, "Ingredients" I, "Pantry" P WHERE U."UserId" = '{}' AND 
+                            U."OrderId" = O."OrderId" AND O."IngredientId" = I."IngredientId" AND 
+                            U."OrderId" = P."OrderId") AS "UserPantry", "IngredientsForRecipe"
+                        WHERE "UserPantry"."IngredientId" = "IngredientsForRecipe"."IngredientId" AND
+                        "UserPantry"."CurrentQuantity" >= "IngredientsForRecipe"."Amount") AS "Available"
+                    GROUP BY "Available"."RecipeId") AS "IngYouHave",
+                        (SELECT "RecipeId", COUNT("IngredientId") AS "NumYouNeed" FROM "IngredientsForRecipe"
+                            GROUP BY "RecipeId") AS "IngYouNeed",
+                        (SELECT "Recipes"."RecipeId", "Recipes"."RecipeName", 
+                            ROUND(AVG("CookedRecipes"."Rating") ,2) AS "avg" FROM "Recipes" INNER JOIN "CookedRecipes" 
+                            ON  "Recipes"."RecipeId" = "CookedRecipes"."RecipeId" 
+                            GROUP BY "Recipes"."RecipeId") AS "Ratings" 
+                WHERE "IngYouNeed"."RecipeId" = "IngYouHave"."RecipeId" AND 
+                "IngYouNeed"."NumYouNeed" = "IngYouHave"."NumYouHave" AND 
+                "IngYouHave"."RecipeId" = "Ratings"."RecipeId";""".format(user_id)
 
     conn = None
     try:
@@ -124,9 +135,9 @@ def recommend_by_pantry(user_id):
         # create a new cursor
         cur = conn.cursor()
         # check if user exists
-        cur.execute(checkdbIDs)
+        cur.execute(checkdb)
         # store all results
-        recipeIds = cur.fetchall()
+        results = cur.fetchall()
         # close the cursor
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -134,32 +145,4 @@ def recommend_by_pantry(user_id):
     finally:
         if conn is not None:
             conn.close()
-
-    for recipeid in recipeIds:
-        ingredients = get_ingredients(recipeid[0])
-        for ingredient in ingredients:
-            include = True
-            pantry_item = check_for_ingredient(ingredient[0], user_id)  # maybe slowing down
-            if pantry_item is None:  # if user doesn't have an ingredient, can't use this recipe
-                include = False
-                break
-            else:
-                if ingredient[2] > pantry_item[1]:
-                    include = False
-                    break
-        if include:
-            goodOnes.append(recipeid[0])  # this recipe passes!
-
-    for winner in goodOnes:
-        recipe = get_recipe(winner)
-        canCook.append([recipe[0], recipe[1], get_rating(winner)[0]])
-    canCook.sort(reverse=True, key=sortFunc)
-    print(time.time() - start_time)
-    return canCook
-
-
-def sortFunc(x):
-    if x[2] is None:
-        return -1
-    else:
-        return x[2]
+    return results
