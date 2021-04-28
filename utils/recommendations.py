@@ -124,7 +124,8 @@ def recommend_by_pantry(user_id):
                             GROUP BY "Recipes"."RecipeId") AS "Ratings" 
                 WHERE "IngYouNeed"."RecipeId" = "IngYouHave"."RecipeId" AND 
                 "IngYouNeed"."NumYouNeed" = "IngYouHave"."NumYouHave" AND 
-                "IngYouHave"."RecipeId" = "Ratings"."RecipeId";""".format(user_id)
+                "IngYouHave"."RecipeId" = "Ratings"."RecipeId"
+                ORDER BY "avg" DESC;""".format(user_id)
 
     conn = None
     try:
