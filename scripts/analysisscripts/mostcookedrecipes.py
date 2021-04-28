@@ -32,12 +32,12 @@ def most_cooked_recipes():
     freqData = [x[1] for x in results]
     largest = max(freqData) + 1 # add 1 to account for exclusive
 
-    plt.hist(freqData, range(1, largest))
+    plt.hist(freqData, range(1, largest), color="green")
     plt.xticks(range(1, largest,2))
 
-    plt.title("Frequency of Cooking Recipes")
-    plt.xlabel("Times cooked")
-    plt.ylabel("Number of recipes")
+    plt.title("Diversity of Recipes")
+    plt.xlabel("Unique times cooked")
+    plt.ylabel("Amount of recipes")
     plt.show()
 
 if __name__ == '__main__':

@@ -39,7 +39,7 @@ def most_cooked_recipes():
     bins = [1,2,5,10,20,50,100,10000]
     binlabels = ["1", "2-5", "6-10", "11-20", "21-50", "51-100", "101+"]
     h = np.histogram(freqData, bins=bins)
-    plt.bar(binlabels, h[0])
+    plt.bar(binlabels, h[0], color="#123456")
     # plt.xticks(bins)
 
     plt.title("User Productivity")
