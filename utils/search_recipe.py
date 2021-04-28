@@ -7,7 +7,7 @@ def search_recipe(searchType, keyword, userid):
     """ finds recipe based on search """
     if searchType == 'name':
         checkdb = """SELECT "RecipeId", "RecipeName" FROM "Recipes" 
-                        WHERE "RecipeName" LIKE '%{}%';""".format(keyword)
+                        WHERE "RecipeName" LIKE '%{}%' ORDER BY "RecipeName" ASC;""".format(keyword)
     elif searchType == 'ingredient':
         checkdb = """SELECT DISTINCT X."RecipeId", X."RecipeName" FROM "Recipes" X, "IngredientsForRecipe" Y, "Ingredients" Z
                         WHERE X."RecipeId" = Y."RecipeId" AND Y."IngredientId" = Z."IngredientId" AND
